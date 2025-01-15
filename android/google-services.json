@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "376512958685",
+    "project_id": "fluttercalculator-8fe21",
+    "storage_bucket": "fluttercalculator-8fe21.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376512958685:android:b1fe79058a2f74b8ae8b34",
+        "android_client_info": {
+          "package_name": "com.example.calculator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "376512958685-6878d4bngdrucmk72i0tdkit0ai7at03.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSeBnxNsVzxaajzR5Y9udZOhwHndqfy2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "376512958685-6878d4bngdrucmk72i0tdkit0ai7at03.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "376512958685-99umssuc8gf318slbsb0cgg1auplaldl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.calculator"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

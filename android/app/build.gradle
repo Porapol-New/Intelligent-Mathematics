@@ -1,0 +1,18 @@
+android {
+    compileSdkVersion 33
+
+    defaultConfig {
+        applicationId "com.example.intelligentmathematics" // ตรวจสอบให้ตรงกับโปรเจกต์
+        minSdkVersion 23
+        targetSdkVersion 33
+        versionCode flutter.versionCode.toInteger()
+        versionName flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
