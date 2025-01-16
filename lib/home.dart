@@ -1,6 +1,8 @@
 // ignore_for_file: sort_child_properties_last
 
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/login.dart';
+import 'package:flutter_loginsystems_1/register.dart';
 // import 'dart:io'; // สำหรับเขียนไฟล์
 
 class MyHome extends StatefulWidget {
@@ -46,9 +48,10 @@ class _MyWidgetState extends State<MyHome> {
                       ),
                     ),
                     onPressed: () {
-                      // // บันทึกข้อมูลเมื่อกดปุ่ม
-                      // saveToFile('User signed up at ${DateTime.now()}\n');
-                      Navigator.pushNamed(context, 'register');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyRegister()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(
@@ -68,9 +71,10 @@ class _MyWidgetState extends State<MyHome> {
                       ),
                     ),
                     onPressed: () {
-                      // บันทึกข้อมูลเมื่อกดปุ่ม
-                      // saveToFile('User logged in at ${DateTime.now()}\n');
-                      Navigator.pushNamed(context, 'login');
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MyLogin()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(

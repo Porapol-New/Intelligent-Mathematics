@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'home.dart';
+import 'package:flutter_loginsystems_1/home.dart';
 
 class UserProfile extends StatefulWidget {
   @override
@@ -17,7 +17,7 @@ class _UserProfileState extends State<UserProfile> {
 
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // ลบลูกศรย้อนกลับ
+        automaticallyImplyLeading: true, // เปิดใช้งานลูกศรย้อนกลับ
         backgroundColor: Colors.transparent,
         elevation: 0, // ลบเงาเพื่อให้ดูสะอาดตา
         title: const Text(
@@ -25,6 +25,8 @@ class _UserProfileState extends State<UserProfile> {
           style: TextStyle(color: Colors.black), // เปลี่ยนสีตัวอักษรเป็นสีดำ
         ),
         centerTitle: true, // จัดข้อความให้อยู่ตรงกลาง
+        iconTheme:
+            const IconThemeData(color: Colors.black), // ตั้งสีลูกศรย้อนกลับ
       ),
       body: Center(
         child: isLoading

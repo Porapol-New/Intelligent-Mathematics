@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/home.dart';
+import 'package:flutter_loginsystems_1/login.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 
 class MyForgotPassword extends StatefulWidget {
@@ -50,7 +52,12 @@ class _MyForgotPasswordState extends State<MyForgotPassword> {
           ),
         );
 
-        Navigator.pop(context);
+        // เมื่อการเปลี่ยนรหัสผ่านสำเร็จ ให้กลับไปที่หน้าหลัก (MyHome)
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MyHome()), // MyHome คือหน้าเป้าหมาย
+        );
       } on FirebaseAuthException catch (e) {
         String errorMessage;
         switch (e.code) {
@@ -109,7 +116,10 @@ class _MyForgotPasswordState extends State<MyForgotPassword> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.black),
             onPressed: () {
-              Navigator.pushNamed(context, 'login');
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => MyLogin()),
+              );
             },
           ),
         ),

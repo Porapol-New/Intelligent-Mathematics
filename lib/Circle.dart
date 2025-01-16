@@ -85,7 +85,7 @@ class _CircleareaState extends State<Circlearea> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minimalist Calculator'),
+        title: Text('Minimalist Circle Calculator'),
         backgroundColor: _isDarkMode
             ? Colors.black
             : Color(0xFFFAFAFA), // ใช้พื้นหลังที่สว่างและดูนวลตา

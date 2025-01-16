@@ -3,6 +3,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/forgot.dart';
+import 'package:flutter_loginsystems_1/home.dart';
+import 'package:flutter_loginsystems_1/register.dart';
 
 import 'Menu.dart';
 import 'package:form_field_validator/form_field_validator.dart';
@@ -53,7 +56,10 @@ class _MyLoginState extends State<MyLogin> {
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.black),
                   onPressed: () {
-                    Navigator.pushNamed(context, 'home');
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHome()),
+                    );
                   },
                 ),
               ),
@@ -215,8 +221,12 @@ class _MyLoginState extends State<MyLogin> {
                                       children: [
                                         TextButton(
                                           onPressed: () {
-                                            Navigator.pushNamed(
-                                                context, 'register');
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyRegister()),
+                                            );
                                           },
                                           child: const Text(
                                             'Sign Up',
@@ -229,8 +239,12 @@ class _MyLoginState extends State<MyLogin> {
                                         const SizedBox(width: 10),
                                         TextButton(
                                           onPressed: () {
-                                            Navigator.pushNamed(
-                                                context, 'forgot');
+                                            Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MyForgotPassword()),
+                                            );
                                           },
                                           child: const Text(
                                             'Forgot password',

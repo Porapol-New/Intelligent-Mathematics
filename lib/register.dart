@@ -53,6 +53,15 @@ class _MyRegisterState extends State<MyRegister> {
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => MyHome()),
+                    );
+                  },
+                ),
               ),
               body: Stack(
                 children: [
