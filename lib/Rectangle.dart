@@ -14,18 +14,17 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(color: Colors.black87),
         ),
       ),
-      home: Rectangle(),
+      home: RectangleCalculator(),
     );
   }
 }
 
-class Rectangle extends StatefulWidget {
+class RectangleCalculator extends StatefulWidget {
   @override
-  _RectangleState createState() =>
-      _RectangleState();
+  _RectangleCalculatorState createState() => _RectangleCalculatorState();
 }
 
-class _RectangleState extends State<Rectangle> {
+class _RectangleCalculatorState extends State<RectangleCalculator> {
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
 
@@ -41,16 +40,24 @@ class _RectangleState extends State<Rectangle> {
     }
   }
 
+  void _goBack(BuildContext context) {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minimalist Rectangle Calculator'),
+        title: Text('Rectangle Area Calculator'),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
         titleTextStyle: TextStyle(color: Colors.black),
         iconTheme: IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => _goBack(context),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

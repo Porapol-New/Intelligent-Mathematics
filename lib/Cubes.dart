@@ -8,14 +8,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Minimalist Calculator',
       theme: ThemeData(
-        primarySwatch: Colors.grey,
+        primarySwatch: Colors.blueGrey, // ใช้สีฟ้าอ่อนและสีเทาสำหรับ Light Mode
         brightness: Brightness.light,
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: Color(0xFFF8F9FA), // พื้นหลังสีขาวนวล
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: TextTheme(
           bodyMedium: TextStyle(color: Colors.black87),
         ),
       ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blueGrey, // ใช้โทนสีเทาฟ้าสำหรับ Dark Mode
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Color(0xFF121212), // พื้นหลังสีดำหม่น
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.white70),
+        ),
+      ),
+      themeMode: ThemeMode.system, // ปรับตามการตั้งค่าระบบ
       home: CubeVolume(),
     );
   }
@@ -29,7 +38,7 @@ class CubeVolume extends StatefulWidget {
 class _CubeVolumeState extends State<CubeVolume> {
   final TextEditingController _sideController = TextEditingController();
   double _cubeVolume = 0.0;
-  bool _showFormula = false; // ตัวแปรเพื่อควบคุมการแสดงคำอธิบายสูตร
+  bool _isDarkMode = false;
 
   void _calculateCubeVolume() {
     final side = double.tryParse(_sideController.text);
@@ -40,22 +49,54 @@ class _CubeVolumeState extends State<CubeVolume> {
     }
   }
 
-  void _toggleFormula() {
+  void _toggleTheme() {
     setState(() {
-      _showFormula = !_showFormula; // เปลี่ยนสถานะการแสดง/ซ่อนสูตร
+      _isDarkMode = !_isDarkMode; // ปรับธีมสี
     });
+  }
+
+  void _showFormulaExplanation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('คำอธิบายสูตรคำนวณ'),
+        content: Text(
+          'การคำนวณปริมาตรของลูกบาศก์ (Cube Volume) ใช้สูตรง่าย ๆ '
+          'ปริมาตร (V) = ด้าน (s) ยกกำลังสาม หรือ V = s³\n'
+          'ปริมาตรของลูกบาศก์คือพื้นที่ที่ลูกบาศก์ใช้ในช่องว่าง ซึ่งสามารถคำนวณได้โดยการนำความยาวของด้านหนึ่งของลูกบาศก์มาคูณกันสามครั้ง '
+          'ดังนั้น ปริมาตรจึงขึ้นอยู่กับค่าของความยาวด้านของลูกบาศก์',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('ปิด'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minimalist Calculator'),
-        backgroundColor: Colors.white,
+        title: Text('Minimalist Cubes Calculator'),
+        backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
-        titleTextStyle: TextStyle(color: Colors.black),
-        iconTheme: IconThemeData(color: Colors.black),
+        titleTextStyle:
+            TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+        iconTheme:
+            IconThemeData(color: _isDarkMode ? Colors.white : Colors.black),
+        actions: [
+          IconButton(
+            icon: Icon(_isDarkMode
+                ? Icons.wb_sunny_outlined
+                : Icons.nightlight_outlined),
+            onPressed: _toggleTheme, // ปุ่มสำหรับเปลี่ยนธีมสี
+            color: _isDarkMode ? Colors.white : Colors.black,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -73,9 +114,10 @@ class _CubeVolumeState extends State<CubeVolume> {
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                        controller: _sideController,
-                        label: 'Side of Cube',
-                        icon: Icons.cut_outlined),
+                      controller: _sideController,
+                      label: 'Side of Cube',
+                      icon: Icons.cut_outlined,
+                    ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
                       label: 'Calculate Cube Volume',
@@ -88,54 +130,28 @@ class _CubeVolumeState extends State<CubeVolume> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: _toggleFormula, // ปุ่มสำหรับแสดง/ซ่อนคำอธิบายสูตร
+                onPressed: _showFormulaExplanation, // เพิ่มปุ่มแสดงคำอธิบายสูตร
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[800],
+                  backgroundColor: Colors.blueGrey,
                   foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 child: Text(
-                  _showFormula ? 'ซ่อนคำอธิบายสูตร' : 'แสดงคำอธิบายสูตร',
+                  'แสดงคำอธิบายสูตร',
                   style: TextStyle(fontSize: 16),
                 ),
               ),
-              if (_showFormula) // แสดงคำอธิบายสูตรเมื่อผู้ใช้กดปุ่ม
-                Padding(
-                  padding: const EdgeInsets.only(top: 20),
-                  child: _buildCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'คำอธิบายสูตร:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 10),
-                        _buildDescriptionText(
-                          'การคำนวณปริมาตรของลูกบาศก์ (Cube Volume) ใช้สูตรง่าย ๆ '
-                          'ปริมาตร (V) = ด้าน (s) ยกกำลังสาม หรือ V = s³\n'
-                          'ปริมาตรของลูกบาศก์คือพื้นที่ที่ลูกบาศก์ใช้ในช่องว่าง ซึ่งสามารถคำนวณได้โดยการนำความยาวของด้านหนึ่งของลูกบาศก์มาคูณกันสามครั้ง '
-                          'ดังนั้น ปริมาตรจึงขึ้นอยู่กับค่าของความยาวด้านของลูกบาศก์',
-                        ),
-                        SizedBox(height: 10),
-                        _buildDescriptionText(
-                          'ตัวอย่าง: ถ้าด้านของลูกบาศก์มีความยาว 3 หน่วย ปริมาตรจะคำนวณเป็น 3³ = 3 x 3 x 3 = 27 หน่วย³',
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
       ),
+      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
     );
   }
 
   Widget _buildCard({required Widget child}) {
     return Card(
-      color: Colors.grey[100],
+      color: _isDarkMode ? Colors.grey[800] : Colors.grey[100],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
@@ -156,17 +172,23 @@ class _CubeVolumeState extends State<CubeVolume> {
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(icon, color: Colors.grey),
+        prefixIcon:
+            Icon(icon, color: _isDarkMode ? Colors.white54 : Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.grey),
+          borderSide:
+              BorderSide(color: _isDarkMode ? Colors.white54 : Colors.grey),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Colors.black),
+          borderSide:
+              BorderSide(color: _isDarkMode ? Colors.white : Colors.black),
         ),
+        labelStyle:
+            TextStyle(color: _isDarkMode ? Colors.white70 : Colors.black),
       ),
       keyboardType: TextInputType.number,
+      style: TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
     );
   }
 
@@ -175,8 +197,8 @@ class _CubeVolumeState extends State<CubeVolume> {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        backgroundColor: _isDarkMode ? Colors.white : Colors.black,
+        foregroundColor: _isDarkMode ? Colors.black : Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         ),
@@ -195,7 +217,7 @@ class _CubeVolumeState extends State<CubeVolume> {
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
-        color: Colors.black87,
+        color: _isDarkMode ? Colors.white : Colors.black87,
       ),
     );
   }
@@ -205,7 +227,7 @@ class _CubeVolumeState extends State<CubeVolume> {
       text,
       style: TextStyle(
         fontSize: 16,
-        color: Colors.grey[800],
+        color: _isDarkMode ? Colors.white70 : Colors.grey[800],
       ),
     );
   }

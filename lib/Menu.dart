@@ -3,8 +3,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_loginsystems_1/Cone.dart';
+import 'package:flutter_loginsystems_1/Cubes.dart';
+import 'package:flutter_loginsystems_1/Parallelogram.dart';
+import 'package:flutter_loginsystems_1/Sphere.dart';
+import 'package:flutter_loginsystems_1/Trapezoid.dart';
+import 'package:flutter_loginsystems_1/Triangle.dart';
 import 'package:flutter_loginsystems_1/userinfo.dart';
-import 'Cylinder.dart';
+// import 'Cubes.dart';
 import 'Rectangle.dart';
 import 'Circle.dart';
 
@@ -57,7 +63,21 @@ class _MymenuState extends State<Mymenu> {
         if (routeName == '/Circlearea') {
           return MaterialPageRoute(builder: (context) => Circlearea());
         } else if (routeName == '/Rectangle') {
-          return MaterialPageRoute(builder: (context) => Rectangle());
+          return MaterialPageRoute(builder: (context) => RectangleCalculator());
+        } else if (routeName == '/CubeVolume') {
+          return MaterialPageRoute(builder: (context) => CubeVolume());
+        } else if (routeName == '/Triangle') {
+          return MaterialPageRoute(builder: (context) => Triangle());
+        } else if (routeName == '/Sphere') {
+          return MaterialPageRoute(builder: (context) => Sphere());
+        } else if (routeName == '/Cone') {
+          return MaterialPageRoute(builder: (context) => Cone());
+        } else if (routeName == '/ParallelogramCalculator') {
+          return MaterialPageRoute(
+              builder: (context) => ParallelogramCalculator());
+        } else if (routeName == '/TrapezoidAreaCalculator') {
+          return MaterialPageRoute(
+              builder: (context) => TrapezoidAreaCalculator());
         } else {
           return MaterialPageRoute(
             builder: (context) =>
@@ -224,10 +244,15 @@ class MenuCard extends StatelessWidget {
   // ฟังก์ชันเพื่อจับคู่ชื่อไอคอนกับไอคอนที่แท้จริง
   IconData _getIconFromName(String iconName) {
     Map<String, IconData> iconMap = {
-      'circle_outlined': Icons.circle,
-      'square_outlined': Icons.square,
+      'circle_outlined': Icons.circle_outlined,
+      'square_outlined': Icons.rectangle_outlined,
       'Cylinder': Icons.blur_circular,
-      'Cube': Icons.widgets,
+      'Cube': Icons.square,
+      'Triangle': Icons.change_history_sharp,
+      'Sphere': Icons.circle_rounded,
+      'Cone': Icons.category_rounded,
+      'Parallelogram': Icons.square_outlined,
+      'Trapezoid': Icons.widgets_rounded,
     };
 
     return iconMap[iconName] ??
