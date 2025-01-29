@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 
-class ParallelogramCalculator extends StatefulWidget {
+class PercentageCalculator extends StatefulWidget {
   @override
-  _ParallelogramCalculatorState createState() =>
-      _ParallelogramCalculatorState();
+  _PercentageCalculatorState createState() => _PercentageCalculatorState();
 }
 
-class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
-  final TextEditingController _baseController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  double _area = 0.0;
+class _PercentageCalculatorState extends State<PercentageCalculator> {
+  final TextEditingController _partController = TextEditingController();
+  final TextEditingController _wholeController = TextEditingController();
+  double _percentage = 0.0;
   bool _isDarkMode = false;
 
-  void _calculateArea() {
-    final base = double.tryParse(_baseController.text);
-    final height = double.tryParse(_heightController.text);
-    if (base != null && height != null) {
+  void _calculatePercentage() {
+    final part = double.tryParse(_partController.text);
+    final whole = double.tryParse(_wholeController.text);
+    if (part != null && whole != null && whole != 0) {
       setState(() {
-        _area = base * height;
+        _percentage = (part / whole) * 100;
       });
     }
   }
@@ -32,13 +31,11 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('คำอธิบายสูตรคำนวณ'),
+        title: Text('คำอธิบายสูตรคำนวณเปอร์เซ็นต์'),
         content: Text(
-          'การคำนวณพื้นที่ของสี่เหลี่ยมด้านขนานใช้สูตรง่าย ๆ คือ:\n'
-          'พื้นที่ = ฐาน × ความสูง'
-          'โดย:'
-          '- ฐาน (Base) คือความยาวด้านล่างของสี่เหลี่ยมด้านขนาน'
-          '- ความสูง (Height) คือระยะตั้งฉากจากฐานถึงด้านตรงข้าม',
+          'การคำนวณเปอร์เซ็นต์ใช้สูตร:\n'
+          'Percentage = (Part / Whole) × 100\n'
+          'โดยที่ Part คือจำนวนที่ต้องการคำนวณและ Whole คือจำนวนทั้งหมด.',
         ),
         actions: [
           TextButton(
@@ -54,8 +51,8 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parallelogram Area Calculator'),
-        backgroundColor: _isDarkMode ? Colors.black : Colors.white,
+        title: Text('Percentage Calculator'),
+        backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
         titleTextStyle:
@@ -72,7 +69,7 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
           ),
           IconButton(
             icon: Icon(Icons.info_outline),
-            onPressed: _showFormulaExplanation, // ปุ่มแสดงคำอธิบายสูตร
+            onPressed: _showFormulaExplanation,
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
         ],
@@ -88,28 +85,29 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDescriptionText(
-                      'สูตรคำนวณพื้นที่สี่เหลี่ยมด้านขนาน: พื้นที่ = ฐาน × ความสูง\n'
-                      'กรุณากรอกค่า ฐาน และ ความสูง เพื่อคำนวณพื้นที่',
+                      'สูตรคำนวณเปอร์เซ็นต์: Percentage = (Part / Whole) × 100\n'
+                      'กรุณากรอกจำนวนที่ต้องการคำนวณ (Part) และจำนวนทั้งหมด (Whole)',
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _baseController,
-                      label: 'Base of Parallelogram',
-                      icon: Icons.square_foot,
+                      controller: _partController,
+                      label: 'Part (จำนวนที่ต้องการคำนวณ)',
+                      icon: Icons.percent,
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _heightController,
-                      label: 'Height of Parallelogram',
-                      icon: Icons.height,
+                      controller: _wholeController,
+                      label: 'Whole (จำนวนทั้งหมด)',
+                      icon: Icons.attach_money,
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
-                      label: 'Calculated',
-                      onPressed: _calculateArea,
+                      label: 'Calculate Percentage',
+                      onPressed: _calculatePercentage,
                     ),
                     SizedBox(height: 8),
-                    _buildResultText('Area: $_area'),
+                    _buildResultText(
+                        'Percentage: ${_percentage.toStringAsFixed(2)}%'),
                   ],
                 ),
               ),

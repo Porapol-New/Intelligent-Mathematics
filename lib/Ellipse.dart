@@ -1,21 +1,55 @@
-import 'package:flutter/material.dart';
-import 'dart:math';
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
 
-class Sphere extends StatefulWidget {
+import 'package:flutter/material.dart';
+import 'dart:math'; // Importing math package for Pi
+
+class MyApp extends StatelessWidget {
   @override
-  _SphereVolumeCalculatorState createState() => _SphereVolumeCalculatorState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Ellipse Area Calculator',
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Color(0xFFF8F9FA),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.black87),
+        ),
+      ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Color(0xFF121212),
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.white70),
+        ),
+      ),
+      themeMode: ThemeMode.system,
+      home: Ellipse(),
+    );
+  }
 }
 
-class _SphereVolumeCalculatorState extends State<Sphere> {
-  final TextEditingController _radiusController = TextEditingController();
-  double _sphereVolume = 0.0;
+class Ellipse extends StatefulWidget {
+  @override
+  _EllipseAreaState createState() => _EllipseAreaState();
+}
+
+class _EllipseAreaState extends State<Ellipse> {
+  final TextEditingController _aController =
+      TextEditingController(); // Semi-major axis
+  final TextEditingController _bController =
+      TextEditingController(); // Semi-minor axis
+  double _ellipseArea = 0.0;
   bool _isDarkMode = false;
 
-  void _calculateSphereVolume() {
-    final radius = double.tryParse(_radiusController.text);
-    if (radius != null) {
+  void _calculateEllipseArea() {
+    final a = double.tryParse(_aController.text);
+    final b = double.tryParse(_bController.text);
+    if (a != null && b != null) {
       setState(() {
-        _sphereVolume = (4 / 3) * pi * pow(radius, 3);
+        _ellipseArea = pi * a * b; // Ellipse area formula
       });
     }
   }
@@ -32,9 +66,9 @@ class _SphereVolumeCalculatorState extends State<Sphere> {
       builder: (context) => AlertDialog(
         title: Text('คำอธิบายสูตรคำนวณ'),
         content: Text(
-          'การคำนวณปริมาตรทรงกลม (Sphere Volume) ใช้สูตร:\n'
-          'Volume = (4/3) × π × r³\n'
-          'โดย r คือรัศมีของทรงกลม และ π (Pi) คือค่าคงที่ทางคณิตศาสตร์ (ประมาณ 3.14159).',
+          'การคำนวณพื้นที่วงรีใช้สูตร:\n'
+          'พื้นที่ (A) = π × a × b\n'
+          'กรุณากรอกค่ารัศมีใหญ่ (a) และรัศมีเล็ก (b) เพื่อคำนวณพื้นที่วงรี',
         ),
         actions: [
           TextButton(
@@ -50,7 +84,7 @@ class _SphereVolumeCalculatorState extends State<Sphere> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sphere Volume Calculator'),
+        title: Text('Ellipse Area Calculator'),
         backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
@@ -66,6 +100,11 @@ class _SphereVolumeCalculatorState extends State<Sphere> {
             onPressed: _toggleTheme,
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
+          IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: _showFormulaExplanation, // Show formula explanation
+            color: _isDarkMode ? Colors.white : Colors.black,
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -79,39 +118,32 @@ class _SphereVolumeCalculatorState extends State<Sphere> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDescriptionText(
-                      'สูตรคำนวณปริมาตรทรงกลม: Volume = (4/3) × π × r³\n'
-                      'กรุณากรอกรัศมีของทรงกลมเพื่อคำนวณปริมาตร',
+                      'สูตรคำนวณพื้นที่วงรี: พื้นที่ = π × a × b\n'
+                      'กรุณากรอกค่ารัศมีใหญ่ (a) และรัศมีเล็ก (b) เพื่อคำนวณพื้นที่วงรี',
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _radiusController,
-                      label: 'Radius of Sphere',
-                      icon: Icons.circle,
+                      controller: _aController,
+                      label: 'Semi-Major Axis (a)',
+                      icon: Icons.circle_outlined,
+                    ),
+                    SizedBox(height: 10),
+                    _buildTextField(
+                      controller: _bController,
+                      label: 'Semi-Minor Axis (b)',
+                      icon: Icons.circle_outlined,
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
-                      label: 'Calculate Sphere Volume',
-                      onPressed: _calculateSphereVolume,
+                      label: 'Calculated',
+                      onPressed: _calculateEllipseArea,
                     ),
                     SizedBox(height: 8),
-                    _buildResultText(
-                        'Sphere Volume: ${_sphereVolume.toStringAsFixed(2)}'),
+                    _buildResultText('Ellipse Area: $_ellipseArea'),
                   ],
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _showFormulaExplanation,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-                child: Text(
-                  'แสดงคำอธิบายสูตร',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
             ],
           ),
         ),

@@ -1,23 +1,52 @@
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
-class ParallelogramCalculator extends StatefulWidget {
+class ConeVolumeApp extends StatelessWidget {
   @override
-  _ParallelogramCalculatorState createState() =>
-      _ParallelogramCalculatorState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Cone Volume Calculator',
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Color(0xFFF8F9FA),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.black87),
+        ),
+      ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Color(0xFF121212),
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.white70),
+        ),
+      ),
+      themeMode: ThemeMode.system,
+      home: Cone(),
+    );
+  }
 }
 
-class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
-  final TextEditingController _baseController = TextEditingController();
+class Cone extends StatefulWidget {
+  @override
+  _ConeVolumeState createState() => _ConeVolumeState();
+}
+
+class _ConeVolumeState extends State<Cone> {
+  final TextEditingController _radiusController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
-  double _area = 0.0;
+  double _coneVolume = 0.0;
   bool _isDarkMode = false;
 
-  void _calculateArea() {
-    final base = double.tryParse(_baseController.text);
+  void _calculateConeVolume() {
+    final radius = double.tryParse(_radiusController.text);
     final height = double.tryParse(_heightController.text);
-    if (base != null && height != null) {
+    if (radius != null && height != null) {
       setState(() {
-        _area = base * height;
+        _coneVolume = (1 / 3) * 3.14159265359 * radius * radius * height;
       });
     }
   }
@@ -34,11 +63,9 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
       builder: (context) => AlertDialog(
         title: Text('คำอธิบายสูตรคำนวณ'),
         content: Text(
-          'การคำนวณพื้นที่ของสี่เหลี่ยมด้านขนานใช้สูตรง่าย ๆ คือ:\n'
-          'พื้นที่ = ฐาน × ความสูง'
-          'โดย:'
-          '- ฐาน (Base) คือความยาวด้านล่างของสี่เหลี่ยมด้านขนาน'
-          '- ความสูง (Height) คือระยะตั้งฉากจากฐานถึงด้านตรงข้าม',
+          'การคำนวณปริมาตรทรงกรวย (Cone Volume) ใช้สูตรดังนี้:\n'
+          'ปริมาตร (V) = (1/3) π r² h\n'
+          'โดยที่ r คือรัศมีของฐาน และ h คือความสูงของทรงกรวย',
         ),
         actions: [
           TextButton(
@@ -54,8 +81,8 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parallelogram Area Calculator'),
-        backgroundColor: _isDarkMode ? Colors.black : Colors.white,
+        title: Text('Cone Volume Calculator'),
+        backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
         titleTextStyle:
@@ -88,28 +115,29 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDescriptionText(
-                      'สูตรคำนวณพื้นที่สี่เหลี่ยมด้านขนาน: พื้นที่ = ฐาน × ความสูง\n'
-                      'กรุณากรอกค่า ฐาน และ ความสูง เพื่อคำนวณพื้นที่',
+                      'สูตรคำนวณปริมาตรทรงกรวย: ปริมาตร = (1/3) × π × รัศมี² × ความสูง\n'
+                      'กรุณากรอกค่ารัศมีและความสูงเพื่อคำนวณปริมาตร',
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _baseController,
-                      label: 'Base of Parallelogram',
-                      icon: Icons.square_foot,
+                      controller: _radiusController,
+                      label: 'Radius of Cone',
+                      icon: Icons.circle,
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
                       controller: _heightController,
-                      label: 'Height of Parallelogram',
+                      label: 'Height of Cone',
                       icon: Icons.height,
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
                       label: 'Calculated',
-                      onPressed: _calculateArea,
+                      onPressed: _calculateConeVolume,
                     ),
                     SizedBox(height: 8),
-                    _buildResultText('Area: $_area'),
+                    _buildResultText(
+                        'Cone Volume: ${_coneVolume.toStringAsFixed(2)}'),
                   ],
                 ),
               ),

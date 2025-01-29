@@ -6,52 +6,59 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Minimalist Calculator',
+      title: 'Pyramid Volume Calculator',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey, // ใช้สีฟ้าอ่อนและสีเทาสำหรับ Light Mode
+        primarySwatch: Colors.blueGrey,
         brightness: Brightness.light,
-        scaffoldBackgroundColor: Color(0xFFF8F9FA), // พื้นหลังสีขาวนวล
+        scaffoldBackgroundColor: Color(0xFFF8F9FA),
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: TextTheme(
           bodyMedium: TextStyle(color: Colors.black87),
         ),
       ),
       darkTheme: ThemeData(
-        primarySwatch: Colors.blueGrey, // ใช้โทนสีเทาฟ้าสำหรับ Dark Mode
+        primarySwatch: Colors.blueGrey,
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: Color(0xFF121212), // พื้นหลังสีดำหม่น
+        scaffoldBackgroundColor: Color(0xFF121212),
         textTheme: TextTheme(
           bodyMedium: TextStyle(color: Colors.white70),
         ),
       ),
-      themeMode: ThemeMode.system, // ปรับตามการตั้งค่าระบบ
-      home: CubeVolume(),
+      themeMode: ThemeMode.system,
+      home: Pyramid(),
     );
   }
 }
 
-class CubeVolume extends StatefulWidget {
+class Pyramid extends StatefulWidget {
   @override
-  _CubeVolumeState createState() => _CubeVolumeState();
+  _PyramidVolumeState createState() => _PyramidVolumeState();
 }
 
-class _CubeVolumeState extends State<CubeVolume> {
-  final TextEditingController _sideController = TextEditingController();
-  double _cubeVolume = 0.0;
+class _PyramidVolumeState extends State<Pyramid> {
+  final TextEditingController _baseLengthController = TextEditingController();
+  final TextEditingController _baseWidthController = TextEditingController();
+  final TextEditingController _heightController = TextEditingController();
+  double _pyramidVolume = 0.0;
   bool _isDarkMode = false;
 
-  void _calculateCubeVolume() {
-    final side = double.tryParse(_sideController.text);
-    if (side != null) {
+  void _calculatePyramidVolume() {
+    final baseLength = double.tryParse(_baseLengthController.text);
+    final baseWidth = double.tryParse(_baseWidthController.text);
+    final height = double.tryParse(_heightController.text);
+    if (baseLength != null && baseWidth != null && height != null) {
       setState(() {
-        _cubeVolume = side * side * side;
+        // Area of the base (Rectangle)
+        double baseArea = baseLength * baseWidth;
+        // Volume of the pyramid
+        _pyramidVolume = (1 / 3) * baseArea * height;
       });
     }
   }
 
   void _toggleTheme() {
     setState(() {
-      _isDarkMode = !_isDarkMode; // ปรับธีมสี
+      _isDarkMode = !_isDarkMode;
     });
   }
 
@@ -61,10 +68,9 @@ class _CubeVolumeState extends State<CubeVolume> {
       builder: (context) => AlertDialog(
         title: Text('คำอธิบายสูตรคำนวณ'),
         content: Text(
-          'การคำนวณปริมาตรของลูกบาศก์ (Cube Volume) ใช้สูตรง่าย ๆ '
-          'ปริมาตร (V) = ด้าน (s) ยกกำลังสาม หรือ V = s³\n'
-          'ปริมาตรของลูกบาศก์คือพื้นที่ที่ลูกบาศก์ใช้ในช่องว่าง ซึ่งสามารถคำนวณได้โดยการนำความยาวของด้านหนึ่งของลูกบาศก์มาคูณกันสามครั้ง '
-          'ดังนั้น ปริมาตรจึงขึ้นอยู่กับค่าของความยาวด้านของลูกบาศก์',
+          'การคำนวณปริมาตรของปิระมิดใช้สูตร:\n'
+          'ปริมาตร (V) = 1/3 × พื้นที่ฐาน (A_b) × ความสูง (h)\n'
+          'กรุณากรอกค่าพื้นที่ฐานและความสูงเพื่อคำนวณปริมาตรของปิระมิด',
         ),
         actions: [
           TextButton(
@@ -80,7 +86,7 @@ class _CubeVolumeState extends State<CubeVolume> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Minimalist Cubes Calculator'),
+        title: Text('Pyramid Volume Calculator'),
         backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
@@ -93,7 +99,12 @@ class _CubeVolumeState extends State<CubeVolume> {
             icon: Icon(_isDarkMode
                 ? Icons.wb_sunny_outlined
                 : Icons.nightlight_outlined),
-            onPressed: _toggleTheme, // ปุ่มสำหรับเปลี่ยนธีมสี
+            onPressed: _toggleTheme,
+            color: _isDarkMode ? Colors.white : Colors.black,
+          ),
+          IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: _showFormulaExplanation, // ปุ่มแสดงคำอธิบายสูตร
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
         ],
@@ -109,38 +120,38 @@ class _CubeVolumeState extends State<CubeVolume> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDescriptionText(
-                      'สูตรคำนวณปริมาตรทรงลูกบาศก์: ปริมาตร = ด้าน^3\n'
-                      'กรุณากรอกค่าด้านของลูกบาศก์เพื่อคำนวณปริมาตร',
+                      'สูตรคำนวณปริมาตรของปิระมิด: ปริมาตร = 1/3 × พื้นที่ฐาน × ความสูง\n'
+                      'กรุณากรอกค่าพื้นที่ฐานและความสูงเพื่อคำนวณปริมาตรของปิระมิด',
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _sideController,
-                      label: 'Side of Cube',
-                      icon: Icons.cut_outlined,
+                      controller: _baseLengthController,
+                      label: 'Base Length',
+                      icon: Icons.straighten,
+                    ),
+                    SizedBox(height: 10),
+                    _buildTextField(
+                      controller: _baseWidthController,
+                      label: 'Base Width',
+                      icon: Icons.straighten,
+                    ),
+                    SizedBox(height: 10),
+                    _buildTextField(
+                      controller: _heightController,
+                      label: 'Pyramid Height',
+                      icon: Icons.height,
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
-                      label: 'Calculate Cube Volume',
-                      onPressed: _calculateCubeVolume,
+                      label: 'Calculated',
+                      onPressed: _calculatePyramidVolume,
                     ),
                     SizedBox(height: 8),
-                    _buildResultText('Cube Volume: $_cubeVolume'),
+                    _buildResultText('Pyramid Volume: $_pyramidVolume'),
                   ],
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _showFormulaExplanation, // เพิ่มปุ่มแสดงคำอธิบายสูตร
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-                child: Text(
-                  'แสดงคำอธิบายสูตร',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
             ],
           ),
         ),

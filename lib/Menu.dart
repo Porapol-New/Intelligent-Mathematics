@@ -3,19 +3,21 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_loginsystems_1/Cone.dart';
-import 'package:flutter_loginsystems_1/Cubes.dart';
+import 'package:flutter_loginsystems_1/Cone%20Volume.dart';
+import 'package:flutter_loginsystems_1/Cube%20Volume.dart';
+import 'package:flutter_loginsystems_1/Ellipse.dart';
 import 'package:flutter_loginsystems_1/Parallelogram.dart';
-import 'package:flutter_loginsystems_1/Sphere.dart';
+import 'package:flutter_loginsystems_1/Percentage.dart';
+import 'package:flutter_loginsystems_1/Pyramid%20Surface%20Area.dart';
+import 'package:flutter_loginsystems_1/Pyramid%20Volume.dart';
+import 'package:flutter_loginsystems_1/Sphere%20Volume.dart';
 import 'package:flutter_loginsystems_1/Trapezoid.dart';
 import 'package:flutter_loginsystems_1/Triangle.dart';
 import 'package:flutter_loginsystems_1/userinfo.dart';
-// import 'Cubes.dart';
 import 'Rectangle.dart';
 import 'Circle.dart';
 
 void main() async {
-  // เริ่มต้นการใช้งาน Firebase ก่อนที่แอปจะเริ่มทำงาน
   await Firebase.initializeApp(
     name: 'menuApp',
     options: FirebaseOptions(
@@ -25,7 +27,7 @@ void main() async {
       projectId: "fluttercalculator-8fe21",
     ),
   );
-  runApp(Mymenu()); // รันแอปหลักที่ชื่อ Mymenu
+  runApp(Mymenu());
 }
 
 class Mymenu extends StatefulWidget {
@@ -34,21 +36,20 @@ class Mymenu extends StatefulWidget {
 }
 
 class _MymenuState extends State<Mymenu> {
-  // ตัวแปรในการจัดการโหมดธีม (แสงหรือมืด)
   ThemeMode _themeMode = ThemeMode.light;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // ปิดแถบ debug
-      title: 'Calculator Menu',
+      debugShowCheckedModeBanner: false,
+      title: 'Home',
       theme: ThemeData(
-        brightness: Brightness.light, // โหมดธีมแบบสว่าง
+        brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
-        brightness: Brightness.dark, // โหมดธีมแบบมืด
+        brightness: Brightness.dark,
       ),
-      themeMode: _themeMode, // เปลี่ยนธีมตามที่ผู้ใช้เลือก
+      themeMode: _themeMode,
       home: HomeScreen(
         onThemeChanged: (bool isDarkMode) {
           setState(() {
@@ -57,7 +58,6 @@ class _MymenuState extends State<Mymenu> {
         },
       ),
       onGenerateRoute: (RouteSettings settings) {
-        // จัดการเส้นทางการนำทางตามชื่อเส้นทาง
         final routeName = settings.name;
 
         if (routeName == '/Circlearea') {
@@ -78,10 +78,18 @@ class _MymenuState extends State<Mymenu> {
         } else if (routeName == '/TrapezoidAreaCalculator') {
           return MaterialPageRoute(
               builder: (context) => TrapezoidAreaCalculator());
+        } else if (routeName == '/Ellipse') {
+          return MaterialPageRoute(builder: (context) => Ellipse());
+        } else if (routeName == '/Pyramid') {
+          return MaterialPageRoute(builder: (context) => Pyramid());
+        } else if (routeName == '/PyramidSurfaceArea') {
+          return MaterialPageRoute(builder: (context) => PyramidSurfaceArea());
+        } else if (routeName == '/PercentageCalculator') {
+          return MaterialPageRoute(
+              builder: (context) => PercentageCalculator());
         } else {
           return MaterialPageRoute(
-            builder: (context) =>
-                NotFoundScreen(), // ถ้าเส้นทางไม่พบ ให้แสดงหน้าจอไม่พบ
+            builder: (context) => NotFoundScreen(),
           );
         }
       },
@@ -90,8 +98,7 @@ class _MymenuState extends State<Mymenu> {
 }
 
 class HomeScreen extends StatefulWidget {
-  final ValueChanged<bool>
-      onThemeChanged; // ตัวแปร Callback เพื่อแจ้งการเปลี่ยนแปลงธีม
+  final ValueChanged<bool> onThemeChanged;
 
   const HomeScreen({required this.onThemeChanged});
 
@@ -100,25 +107,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String searchQuery = ""; // ตัวแปรสำหรับเก็บคำค้นหาเพื่อกรองรายการเมนู
+  String searchQuery = "";
 
   @override
   Widget build(BuildContext context) {
-    bool isDarkMode = Theme.of(context).brightness ==
-        Brightness.dark; // ตรวจสอบว่าใช้ธีมมืดหรือสว่าง
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
         title: Text('Select a Calculation'),
         actions: [
-          // ไอคอนสำหรับสลับระหว่างโหมดมืดและสว่าง
           IconButton(
             icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
             onPressed: () {
-              widget.onThemeChanged(!isDarkMode); // เปลี่ยนธีมเมื่อกดปุ่ม
+              widget.onThemeChanged(!isDarkMode);
             },
+            color: isDarkMode ? Colors.white : Colors.black, // Set icon color
           ),
-          // ไอคอนสำหรับไปที่หน้าประวัติผู้ใช้
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
@@ -127,6 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (context) => UserProfile()),
               );
             },
+            color: isDarkMode ? Colors.white : Colors.black, // Set icon color
           ),
         ],
       ),
@@ -134,7 +140,6 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // ช่องกรอกคำค้นหาสำหรับกรองรายการเมนู
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search calculations...',
@@ -145,13 +150,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               onChanged: (value) {
                 setState(() {
-                  searchQuery = value; // อัปเดตคำค้นหาตามที่พิมพ์
+                  searchQuery = value;
                 });
               },
             ),
             SizedBox(height: 20),
             Expanded(
-              // StreamBuilder เพื่อดึงข้อมูลเมนูจาก Firebase
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('menuItems')
@@ -167,7 +171,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Center(child: Text('No calculations found'));
                   }
 
-                  // กรองเอกสารที่ตรงกับคำค้นหา
                   final filteredDocs = snapshot.data!.docs.where((doc) {
                     final title = doc['title'].toString().toLowerCase();
                     return title.contains(searchQuery.toLowerCase());
@@ -189,7 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       final doc = filteredDocs[index];
                       return MenuCard(
                         title: doc['title'],
-                        iconName: doc['icon'],
+                        imagePath:
+                            doc['icon'], // Use image path instead of icon
                         routeName: doc['route'],
                       );
                     },
@@ -206,57 +210,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class MenuCard extends StatelessWidget {
   final String title;
-  final String iconName;
+  final String imagePath; // Use imagePath for better clarity
   final String routeName;
 
   const MenuCard({
     required this.title,
-    required this.iconName,
+    required this.imagePath,
     required this.routeName,
   });
 
   @override
   Widget build(BuildContext context) {
-    IconData icon = _getIconFromName(iconName); // รับไอคอนจากชื่อที่กำหนด
-
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(
-            context, routeName); // นำทางไปยังเส้นทางที่กำหนดเมื่อคลิก
+        Navigator.pushNamed(context, routeName);
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(20), // การตั้งค่ามุมของการ์ดให้กลม
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 50), // แสดงไอคอน
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  imagePath, // Use image from assets
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
             SizedBox(height: 10),
-            Text(title), // แสดงชื่อเมนู
+            Text(title),
           ],
         ),
       ),
     );
-  }
-
-  // ฟังก์ชันเพื่อจับคู่ชื่อไอคอนกับไอคอนที่แท้จริง
-  IconData _getIconFromName(String iconName) {
-    Map<String, IconData> iconMap = {
-      'circle_outlined': Icons.circle_outlined,
-      'square_outlined': Icons.rectangle_outlined,
-      'Cylinder': Icons.blur_circular,
-      'Cube': Icons.square,
-      'Triangle': Icons.change_history_sharp,
-      'Sphere': Icons.circle_rounded,
-      'Cone': Icons.category_rounded,
-      'Parallelogram': Icons.square_outlined,
-      'Trapezoid': Icons.widgets_rounded,
-    };
-
-    return iconMap[iconName] ??
-        Icons.help_outline; // ถ้าไม่พบไอคอนให้ใช้ไอคอนช่วยเหลือ
   }
 }
 
@@ -269,7 +259,7 @@ class NotFoundScreen extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          'Page not found', // แสดงข้อความเมื่อไม่พบเส้นทาง
+          'Page not found',
           style: TextStyle(fontSize: 24),
         ),
       ),

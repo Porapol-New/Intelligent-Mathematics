@@ -1,23 +1,55 @@
+// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 
-class ParallelogramCalculator extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _ParallelogramCalculatorState createState() =>
-      _ParallelogramCalculatorState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Pyramid Surface Area Calculator',
+      theme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Color(0xFFF8F9FA),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.black87),
+        ),
+      ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Color(0xFF121212),
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(color: Colors.white70),
+        ),
+      ),
+      themeMode: ThemeMode.system,
+      home: PyramidSurfaceArea(),
+    );
+  }
 }
 
-class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
-  final TextEditingController _baseController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  double _area = 0.0;
+class PyramidSurfaceArea extends StatefulWidget {
+  @override
+  _PyramidSurfaceAreaState createState() => _PyramidSurfaceAreaState();
+}
+
+class _PyramidSurfaceAreaState extends State<PyramidSurfaceArea> {
+  final TextEditingController _baseAreaController = TextEditingController();
+  final TextEditingController _basePerimeterController =
+      TextEditingController();
+  final TextEditingController _slantHeightController = TextEditingController();
+  double _surfaceArea = 0.0;
   bool _isDarkMode = false;
 
-  void _calculateArea() {
-    final base = double.tryParse(_baseController.text);
-    final height = double.tryParse(_heightController.text);
-    if (base != null && height != null) {
+  void _calculateSurfaceArea() {
+    final baseArea = double.tryParse(_baseAreaController.text);
+    final basePerimeter = double.tryParse(_basePerimeterController.text);
+    final slantHeight = double.tryParse(_slantHeightController.text);
+    if (baseArea != null && basePerimeter != null && slantHeight != null) {
       setState(() {
-        _area = base * height;
+        _surfaceArea = baseArea + 0.5 * basePerimeter * slantHeight;
       });
     }
   }
@@ -34,16 +66,18 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
       builder: (context) => AlertDialog(
         title: Text('คำอธิบายสูตรคำนวณ'),
         content: Text(
-          'การคำนวณพื้นที่ของสี่เหลี่ยมด้านขนานใช้สูตรง่าย ๆ คือ:\n'
-          'พื้นที่ = ฐาน × ความสูง'
-          'โดย:'
-          '- ฐาน (Base) คือความยาวด้านล่างของสี่เหลี่ยมด้านขนาน'
-          '- ความสูง (Height) คือระยะตั้งฉากจากฐานถึงด้านตรงข้าม',
+          'การคำนวณพื้นที่ผิวของปิระมิดใช้สูตร:\n'
+          'พื้นที่ผิวรวม = พื้นที่ฐาน + พื้นที่ผิวด้านข้าง\n\n'
+          '\n'
+          'พื้นที่ฐาน = ความยาวฐาน × ความกว้างฐาน\n'
+          'พื้นที่ผิวด้านข้าง = 1/2 × (ความยาวฐาน + ความกว้างฐาน) × ความเอียงของปิระมิด\n'
+          '\n'
+          'กรุณากรอกค่าความยาวฐาน, ความกว้างฐาน และความเอียงเพื่อคำนวณพื้นที่ผิว.',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('ปิด'),
+            child: Text('Close'),
           ),
         ],
       ),
@@ -54,8 +88,8 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parallelogram Area Calculator'),
-        backgroundColor: _isDarkMode ? Colors.black : Colors.white,
+        title: Text('Pyramid Surface Area Calculator'),
+        backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
         titleTextStyle:
@@ -72,7 +106,7 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
           ),
           IconButton(
             icon: Icon(Icons.info_outline),
-            onPressed: _showFormulaExplanation, // ปุ่มแสดงคำอธิบายสูตร
+            onPressed: _showFormulaExplanation,
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
         ],
@@ -88,28 +122,34 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDescriptionText(
-                      'สูตรคำนวณพื้นที่สี่เหลี่ยมด้านขนาน: พื้นที่ = ฐาน × ความสูง\n'
-                      'กรุณากรอกค่า ฐาน และ ความสูง เพื่อคำนวณพื้นที่',
+                      'สูตรคำนวณพื้นที่ผิวของปิระมิด: พื้นที่ผิวรวม = พื้นที่ฐาน + พื้นที่ผิวด้านข้างกรุณากรอกค่าความยาวฐาน, \n'
+                      'ความกว้างฐาน และความเอียงเพื่อคำนวณพื้นที่ผิว',
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _baseController,
-                      label: 'Base of Parallelogram',
+                      controller: _baseAreaController,
+                      label: 'Base Length(B)',
                       icon: Icons.square_foot,
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _heightController,
-                      label: 'Height of Parallelogram',
+                      controller: _basePerimeterController,
+                      label: 'Base Width (W)',
+                      icon: Icons.straighten,
+                    ),
+                    SizedBox(height: 10),
+                    _buildTextField(
+                      controller: _slantHeightController,
+                      label: 'Slant Height (l)',
                       icon: Icons.height,
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
-                      label: 'Calculated',
-                      onPressed: _calculateArea,
+                      label: 'Calculate',
+                      onPressed: _calculateSurfaceArea,
                     ),
                     SizedBox(height: 8),
-                    _buildResultText('Area: $_area'),
+                    _buildResultText('Surface Area: $_surfaceArea'),
                   ],
                 ),
               ),

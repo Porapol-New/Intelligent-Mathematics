@@ -2,58 +2,56 @@
 
 import 'package:flutter/material.dart';
 
-class ConeVolumeApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Cone Volume Calculator',
+      title: 'Minimalist Calculator',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.blueGrey, // ใช้สีฟ้าอ่อนและสีเทาสำหรับ Light Mode
         brightness: Brightness.light,
-        scaffoldBackgroundColor: Color(0xFFF8F9FA),
+        scaffoldBackgroundColor: Color(0xFFF8F9FA), // พื้นหลังสีขาวนวล
         visualDensity: VisualDensity.adaptivePlatformDensity,
         textTheme: TextTheme(
           bodyMedium: TextStyle(color: Colors.black87),
         ),
       ),
       darkTheme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.blueGrey, // ใช้โทนสีเทาฟ้าสำหรับ Dark Mode
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: Color(0xFF121212),
+        scaffoldBackgroundColor: Color(0xFF121212), // พื้นหลังสีดำหม่น
         textTheme: TextTheme(
           bodyMedium: TextStyle(color: Colors.white70),
         ),
       ),
-      themeMode: ThemeMode.system,
-      home: Cone(),
+      themeMode: ThemeMode.system, // ปรับตามการตั้งค่าระบบ
+      home: CubeVolume(),
     );
   }
 }
 
-class Cone extends StatefulWidget {
+class CubeVolume extends StatefulWidget {
   @override
-  _ConeVolumeState createState() => _ConeVolumeState();
+  _CubeVolumeState createState() => _CubeVolumeState();
 }
 
-class _ConeVolumeState extends State<Cone> {
-  final TextEditingController _radiusController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  double _coneVolume = 0.0;
+class _CubeVolumeState extends State<CubeVolume> {
+  final TextEditingController _sideController = TextEditingController();
+  double _cubeVolume = 0.0;
   bool _isDarkMode = false;
 
-  void _calculateConeVolume() {
-    final radius = double.tryParse(_radiusController.text);
-    final height = double.tryParse(_heightController.text);
-    if (radius != null && height != null) {
+  void _calculateCubeVolume() {
+    final side = double.tryParse(_sideController.text);
+    if (side != null) {
       setState(() {
-        _coneVolume = (1 / 3) * 3.14159265359 * radius * radius * height;
+        _cubeVolume = side * side * side;
       });
     }
   }
 
   void _toggleTheme() {
     setState(() {
-      _isDarkMode = !_isDarkMode;
+      _isDarkMode = !_isDarkMode; // ปรับธีมสี
     });
   }
 
@@ -63,9 +61,10 @@ class _ConeVolumeState extends State<Cone> {
       builder: (context) => AlertDialog(
         title: Text('คำอธิบายสูตรคำนวณ'),
         content: Text(
-          'การคำนวณปริมาตรทรงกรวย (Cone Volume) ใช้สูตรดังนี้:\n'
-          'ปริมาตร (V) = (1/3) π r² h\n'
-          'โดยที่ r คือรัศมีของฐาน และ h คือความสูงของทรงกรวย',
+          'การคำนวณปริมาตรของลูกบาศก์ (Cube Volume) ใช้สูตรง่าย ๆ '
+          'ปริมาตร (V) = ด้าน (s) ยกกำลังสาม หรือ V = s³\n'
+          'ปริมาตรของลูกบาศก์คือพื้นที่ที่ลูกบาศก์ใช้ในช่องว่าง ซึ่งสามารถคำนวณได้โดยการนำความยาวของด้านหนึ่งของลูกบาศก์มาคูณกันสามครั้ง '
+          'ดังนั้น ปริมาตรจึงขึ้นอยู่กับค่าของความยาวด้านของลูกบาศก์',
         ),
         actions: [
           TextButton(
@@ -81,7 +80,7 @@ class _ConeVolumeState extends State<Cone> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cone Volume Calculator'),
+        title: Text('Minimalist Cubes Calculator'),
         backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
@@ -94,7 +93,12 @@ class _ConeVolumeState extends State<Cone> {
             icon: Icon(_isDarkMode
                 ? Icons.wb_sunny_outlined
                 : Icons.nightlight_outlined),
-            onPressed: _toggleTheme,
+            onPressed: _toggleTheme, // ปุ่มสำหรับเปลี่ยนธีมสี
+            color: _isDarkMode ? Colors.white : Colors.black,
+          ),
+          IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: _showFormulaExplanation, // ปุ่มแสดงคำอธิบายสูตร
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
         ],
@@ -110,45 +114,26 @@ class _ConeVolumeState extends State<Cone> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDescriptionText(
-                      'สูตรคำนวณปริมาตรทรงกรวย: ปริมาตร = (1/3) × π × รัศมี² × ความสูง\n'
-                      'กรุณากรอกค่ารัศมีและความสูงเพื่อคำนวณปริมาตร',
+                      'สูตรคำนวณปริมาตรทรงลูกบาศก์: ปริมาตร = ด้าน^3\n'
+                      'กรุณากรอกค่าด้านของลูกบาศก์เพื่อคำนวณปริมาตร',
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _radiusController,
-                      label: 'Radius of Cone',
-                      icon: Icons.circle,
-                    ),
-                    SizedBox(height: 10),
-                    _buildTextField(
-                      controller: _heightController,
-                      label: 'Height of Cone',
-                      icon: Icons.height,
+                      controller: _sideController,
+                      label: 'Side of Cube',
+                      icon: Icons.cut_outlined,
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
-                      label: 'Calculate Cone Volume',
-                      onPressed: _calculateConeVolume,
+                      label: 'Calculated',
+                      onPressed: _calculateCubeVolume,
                     ),
                     SizedBox(height: 8),
-                    _buildResultText(
-                        'Cone Volume: ${_coneVolume.toStringAsFixed(2)}'),
+                    _buildResultText('Cube Volume: $_cubeVolume'),
                   ],
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _showFormulaExplanation,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-                child: Text(
-                  'แสดงคำอธิบายสูตร',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
             ],
           ),
         ),

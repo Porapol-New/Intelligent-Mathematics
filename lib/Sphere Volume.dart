@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
-class ParallelogramCalculator extends StatefulWidget {
+class Sphere extends StatefulWidget {
   @override
-  _ParallelogramCalculatorState createState() =>
-      _ParallelogramCalculatorState();
+  _SphereVolumeCalculatorState createState() => _SphereVolumeCalculatorState();
 }
 
-class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
-  final TextEditingController _baseController = TextEditingController();
-  final TextEditingController _heightController = TextEditingController();
-  double _area = 0.0;
+class _SphereVolumeCalculatorState extends State<Sphere> {
+  final TextEditingController _radiusController = TextEditingController();
+  double _sphereVolume = 0.0;
   bool _isDarkMode = false;
 
-  void _calculateArea() {
-    final base = double.tryParse(_baseController.text);
-    final height = double.tryParse(_heightController.text);
-    if (base != null && height != null) {
+  void _calculateSphereVolume() {
+    final radius = double.tryParse(_radiusController.text);
+    if (radius != null) {
       setState(() {
-        _area = base * height;
+        _sphereVolume = (4 / 3) * pi * pow(radius, 3);
       });
     }
   }
@@ -34,11 +32,9 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
       builder: (context) => AlertDialog(
         title: Text('คำอธิบายสูตรคำนวณ'),
         content: Text(
-          'การคำนวณพื้นที่ของสี่เหลี่ยมด้านขนานใช้สูตรง่าย ๆ คือ:\n'
-          'พื้นที่ = ฐาน × ความสูง'
-          'โดย:'
-          '- ฐาน (Base) คือความยาวด้านล่างของสี่เหลี่ยมด้านขนาน'
-          '- ความสูง (Height) คือระยะตั้งฉากจากฐานถึงด้านตรงข้าม',
+          'การคำนวณปริมาตรทรงกลม (Sphere Volume) ใช้สูตร:\n'
+          'Volume = (4/3) × π × r³\n'
+          'โดย r คือรัศมีของทรงกลม และ π (Pi) คือค่าคงที่ทางคณิตศาสตร์ (ประมาณ 3.14159).',
         ),
         actions: [
           TextButton(
@@ -54,8 +50,8 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parallelogram Area Calculator'),
-        backgroundColor: _isDarkMode ? Colors.black : Colors.white,
+        title: Text('Sphere Volume Calculator'),
+        backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
         titleTextStyle:
@@ -88,28 +84,23 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildDescriptionText(
-                      'สูตรคำนวณพื้นที่สี่เหลี่ยมด้านขนาน: พื้นที่ = ฐาน × ความสูง\n'
-                      'กรุณากรอกค่า ฐาน และ ความสูง เพื่อคำนวณพื้นที่',
+                      'สูตรคำนวณปริมาตรทรงกลม: Volume = (4/3) × π × r³\n'
+                      'กรุณากรอกรัศมีของทรงกลมเพื่อคำนวณปริมาตร',
                     ),
                     SizedBox(height: 10),
                     _buildTextField(
-                      controller: _baseController,
-                      label: 'Base of Parallelogram',
-                      icon: Icons.square_foot,
-                    ),
-                    SizedBox(height: 10),
-                    _buildTextField(
-                      controller: _heightController,
-                      label: 'Height of Parallelogram',
-                      icon: Icons.height,
+                      controller: _radiusController,
+                      label: 'Radius of Sphere',
+                      icon: Icons.circle,
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
                       label: 'Calculated',
-                      onPressed: _calculateArea,
+                      onPressed: _calculateSphereVolume,
                     ),
                     SizedBox(height: 8),
-                    _buildResultText('Area: $_area'),
+                    _buildResultText(
+                        'Sphere Volume: ${_sphereVolume.toStringAsFixed(2)}'),
                   ],
                 ),
               ),

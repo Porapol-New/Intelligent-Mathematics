@@ -14,6 +14,7 @@ class _UserProfileState extends State<UserProfile> {
   @override
   Widget build(BuildContext context) {
     final User? user = auth.currentUser; // ใช้ User? เพื่อรองรับ null safety
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -25,8 +26,9 @@ class _UserProfileState extends State<UserProfile> {
           style: TextStyle(color: Colors.black), // เปลี่ยนสีตัวอักษรเป็นสีดำ
         ),
         centerTitle: true, // จัดข้อความให้อยู่ตรงกลาง
-        iconTheme:
-            const IconThemeData(color: Colors.black), // ตั้งสีลูกศรย้อนกลับ
+        iconTheme: IconThemeData(
+            color:
+                isDarkMode ? Colors.white : Colors.black), // ปรับสีไอคอนตามธีม
       ),
       body: Center(
         child: isLoading
@@ -41,13 +43,20 @@ class _UserProfileState extends State<UserProfile> {
                       children: [
                         Text(
                           '${user.email}',
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: isDarkMode
+                                ? Colors.white
+                                : Colors.black, // ปรับสีข้อความตามธีม
+                          ),
                         ),
                         const SizedBox(height: 20), // เพิ่มระยะห่าง
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black, // สีพื้นหลังปุ่ม
+                            backgroundColor: isDarkMode
+                                ? Colors.white
+                                : Colors.black, // ปรับสีพื้นหลังปุ่มตามธีม
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 10),
                             shape: RoundedRectangleBorder(
@@ -71,11 +80,14 @@ class _UserProfileState extends State<UserProfile> {
                               );
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'Logout',
                             style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16), // เปลี่ยนสีตัวอักษรเป็นสีขาว
+                              color: isDarkMode
+                                  ? Colors.black
+                                  : Colors.white, // ปรับสีตัวอักษรในปุ่มตามธีม
+                              fontSize: 16,
+                            ),
                           ),
                         ),
                       ],

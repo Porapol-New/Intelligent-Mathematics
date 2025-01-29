@@ -97,6 +97,11 @@ class _TriangleAreaState extends State<Triangle> {
             onPressed: _toggleTheme,
             color: _isDarkMode ? Colors.white : Colors.black,
           ),
+          IconButton(
+            icon: Icon(Icons.info_outline),
+            onPressed: _showFormulaExplanation, // ปุ่มแสดงคำอธิบายสูตร
+            color: _isDarkMode ? Colors.white : Colors.black,
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -127,7 +132,7 @@ class _TriangleAreaState extends State<Triangle> {
                     ),
                     SizedBox(height: 8),
                     _buildCalculateButton(
-                      label: 'Calculate Triangle Area',
+                      label: 'Calculated',
                       onPressed: _calculateTriangleArea,
                     ),
                     SizedBox(height: 8),
@@ -136,18 +141,6 @@ class _TriangleAreaState extends State<Triangle> {
                 ),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _showFormulaExplanation,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueGrey,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-                child: Text(
-                  'แสดงคำอธิบายสูตร',
-                  style: TextStyle(fontSize: 16),
-                ),
-              ),
             ],
           ),
         ),
