@@ -14,6 +14,7 @@ import 'package:flutter_loginsystems_1/Sphere%20Volume.dart';
 import 'package:flutter_loginsystems_1/Trapezoid.dart';
 import 'package:flutter_loginsystems_1/Triangle.dart';
 import 'package:flutter_loginsystems_1/userinfo.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Rectangle.dart';
 import 'Circle.dart';
 
@@ -39,6 +40,25 @@ class _MymenuState extends State<Mymenu> {
   ThemeMode _themeMode = ThemeMode.light;
 
   @override
+  void initState() {
+    super.initState();
+    _loadTheme(); // Load theme preference on app start
+  }
+
+  Future<void> _loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isDarkMode = prefs.getBool('isDarkMode') ?? false;
+    setState(() {
+      _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
+    });
+  }
+
+  Future<void> _saveTheme(bool isDarkMode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', isDarkMode);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -55,43 +75,92 @@ class _MymenuState extends State<Mymenu> {
           setState(() {
             _themeMode = isDarkMode ? ThemeMode.dark : ThemeMode.light;
           });
+          _saveTheme(isDarkMode); // Save theme when changed
         },
       ),
       onGenerateRoute: (RouteSettings settings) {
         final routeName = settings.name;
 
-        if (routeName == '/Circlearea') {
-          return MaterialPageRoute(builder: (context) => Circlearea());
-        } else if (routeName == '/Rectangle') {
-          return MaterialPageRoute(builder: (context) => RectangleCalculator());
-        } else if (routeName == '/CubeVolume') {
-          return MaterialPageRoute(builder: (context) => CubeVolume());
-        } else if (routeName == '/Triangle') {
-          return MaterialPageRoute(builder: (context) => Triangle());
-        } else if (routeName == '/Sphere') {
-          return MaterialPageRoute(builder: (context) => Sphere());
-        } else if (routeName == '/Cone') {
-          return MaterialPageRoute(builder: (context) => Cone());
-        } else if (routeName == '/ParallelogramCalculator') {
-          return MaterialPageRoute(
-              builder: (context) => ParallelogramCalculator());
-        } else if (routeName == '/TrapezoidAreaCalculator') {
-          return MaterialPageRoute(
-              builder: (context) => TrapezoidAreaCalculator());
-        } else if (routeName == '/Ellipse') {
-          return MaterialPageRoute(builder: (context) => Ellipse());
-        } else if (routeName == '/Pyramid') {
-          return MaterialPageRoute(builder: (context) => Pyramid());
-        } else if (routeName == '/PyramidSurfaceArea') {
-          return MaterialPageRoute(builder: (context) => PyramidSurfaceArea());
-        } else if (routeName == '/PercentageCalculator') {
-          return MaterialPageRoute(
-              builder: (context) => PercentageCalculator());
-        } else {
-          return MaterialPageRoute(
-            builder: (context) => NotFoundScreen(),
-          );
-        }
+        return MaterialPageRoute(
+          builder: (context) {
+            switch (routeName) {
+              case '/Circlearea':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: Circlearea());
+              case '/Rectangle':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: RectangleCalculator());
+              case '/CubeVolume':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: CubeVolume());
+              case '/Triangle':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: Triangle());
+              case '/Sphere':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: Sphere());
+              case '/Cone':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: Cone());
+              case '/ParallelogramCalculator':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: ParallelogramCalculator());
+              case '/TrapezoidAreaCalculator':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: TrapezoidAreaCalculator());
+              case '/Ellipse':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: Ellipse());
+              case '/Pyramid':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: Pyramid());
+              case '/PyramidSurfaceArea':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: PyramidSurfaceArea());
+              case '/PercentageCalculator':
+                return Theme(
+                    data: _themeMode == ThemeMode.dark
+                        ? ThemeData.dark()
+                        : ThemeData.light(),
+                    child: PercentageCalculator());
+              default:
+                return NotFoundScreen();
+            }
+          },
+        );
       },
     );
   }
@@ -120,19 +189,21 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: Icon(isDarkMode ? Icons.wb_sunny : Icons.nightlight_round),
             onPressed: () {
-              widget.onThemeChanged(!isDarkMode);
+              widget.onThemeChanged(!isDarkMode); // Toggle theme
             },
-            color: isDarkMode ? Colors.white : Colors.black, // Set icon color
+            color: isDarkMode ? Colors.white : Colors.black,
           ),
           IconButton(
             icon: Icon(Icons.person),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => UserProfile()),
+                MaterialPageRoute(
+                  builder: (context) => UserProfile(),
+                ),
               );
             },
-            color: isDarkMode ? Colors.white : Colors.black, // Set icon color
+            color: isDarkMode ? Colors.white : Colors.black,
           ),
         ],
       ),
@@ -178,7 +249,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   if (filteredDocs.isEmpty) {
                     return Center(
-                        child: Text('No matching calculations found'));
+                      child: Text('No matching calculations found'),
+                    );
                   }
 
                   return GridView.builder(
