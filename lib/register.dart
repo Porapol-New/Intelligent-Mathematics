@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/login.dart';
 import 'home.dart';
 import 'profile.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -266,7 +267,12 @@ class _MyRegisterState extends State<MyRegister> {
                                     children: [
                                       TextButton(
                                         onPressed: () {
-                                          Navigator.pushNamed(context, 'login');
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MyLogin()),
+                                          );
                                         },
                                         child: Text(
                                           'Sign In',
