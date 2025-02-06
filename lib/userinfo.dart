@@ -19,11 +19,16 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true, // เปิดใช้งานลูกศรย้อนกลับ
-        backgroundColor: Colors.transparent,
+        backgroundColor: isDarkMode
+            ? Colors.black
+            : Colors.white, // เปลี่ยนสีพื้นหลัง AppBar ตามธีม
         elevation: 0, // ลบเงาเพื่อให้ดูสะอาดตา
-        title: const Text(
+        title: Text(
           'User Profile',
-          style: TextStyle(color: Colors.black), // เปลี่ยนสีตัวอักษรเป็นสีดำ
+          style: TextStyle(
+              color: isDarkMode
+                  ? Colors.white
+                  : Colors.black), // ปรับสีตัวอักษรตามธีม
         ),
         centerTitle: true, // จัดข้อความให้อยู่ตรงกลาง
         iconTheme: IconThemeData(
