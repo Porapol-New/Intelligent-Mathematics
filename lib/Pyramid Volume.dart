@@ -1,8 +1,6 @@
-// ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 
-class MyApp extends StatelessWidget {
+class PyramidVolume extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,7 +10,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         scaffoldBackgroundColor: Color(0xFFF8F9FA),
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           bodyMedium: TextStyle(color: Colors.black87),
         ),
       ),
@@ -20,17 +18,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blueGrey,
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color(0xFF121212),
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           bodyMedium: TextStyle(color: Colors.white70),
         ),
       ),
       themeMode: ThemeMode.system,
-      home: Pyramid(),
+      home: const Pyramid(),
     );
   }
 }
 
 class Pyramid extends StatefulWidget {
+  const Pyramid();
+
   @override
   _PyramidVolumeState createState() => _PyramidVolumeState();
 }
@@ -40,42 +40,39 @@ class _PyramidVolumeState extends State<Pyramid> {
   final TextEditingController _baseWidthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
   double _pyramidVolume = 0.0;
-  bool _isDarkMode = false;
 
   void _calculatePyramidVolume() {
     final baseLength = double.tryParse(_baseLengthController.text);
     final baseWidth = double.tryParse(_baseWidthController.text);
     final height = double.tryParse(_heightController.text);
-    if (baseLength != null && baseWidth != null && height != null) {
+    if (baseLength == null ||
+        baseWidth == null ||
+        height == null ||
+        baseLength <= 0 ||
+        baseWidth <= 0 ||
+        height <= 0) {
+      _showErrorDialog('กรุณากรอกค่าที่ถูกต้อง');
       setState(() {
-        // Area of the base (Rectangle)
+        _pyramidVolume = 0.0;
+      });
+    } else {
+      setState(() {
         double baseArea = baseLength * baseWidth;
-        // Volume of the pyramid
         _pyramidVolume = (1 / 3) * baseArea * height;
       });
     }
   }
 
-  void _toggleTheme() {
-    setState(() {
-      _isDarkMode = !_isDarkMode;
-    });
-  }
-
-  void _showFormulaExplanation() {
+  void _showErrorDialog(String errorMessage) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('คำอธิบายสูตรคำนวณ'),
-        content: Text(
-          'การคำนวณปริมาตรของปิระมิดใช้สูตร:\n'
-          'ปริมาตร (V) = 1/3 × พื้นที่ฐาน (A_b) × ความสูง (h)\n'
-          'กรุณากรอกค่าพื้นที่ฐานและความสูงเพื่อคำนวณปริมาตรของปิระมิด',
-        ),
+        title: const Text('Input Error'),
+        content: Text(errorMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('ปิด'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -84,93 +81,90 @@ class _PyramidVolumeState extends State<Pyramid> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pyramid Volume Calculator'),
-        backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
+        title: const Text('Pyramid Volume Calculator'),
+        backgroundColor: isDarkMode ? Colors.black : const Color(0xFFFAFAFA),
         elevation: 0,
         centerTitle: true,
         titleTextStyle:
-            TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+            TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         iconTheme:
-            IconThemeData(color: _isDarkMode ? Colors.white : Colors.black),
+            IconThemeData(color: isDarkMode ? Colors.white : Colors.black),
         actions: [
           IconButton(
-            icon: Icon(_isDarkMode
-                ? Icons.wb_sunny_outlined
-                : Icons.nightlight_outlined),
-            onPressed: _toggleTheme,
-            color: _isDarkMode ? Colors.white : Colors.black,
-          ),
-          IconButton(
-            icon: Icon(Icons.info_outline),
-            onPressed: _showFormulaExplanation, // ปุ่มแสดงคำอธิบายสูตร
-            color: _isDarkMode ? Colors.white : Colors.black,
+            icon: const Icon(Icons.info_outline),
+            onPressed: _showFormulaExplanation,
+            color: isDarkMode ? Colors.white : Colors.black,
           ),
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildDescriptionText(
-                      'สูตรคำนวณปริมาตรของปิระมิด: ปริมาตร = 1/3 × พื้นที่ฐาน × ความสูง\n'
-                      'กรุณากรอกค่าพื้นที่ฐานและความสูงเพื่อคำนวณปริมาตรของปิระมิด',
-                    ),
-                    SizedBox(height: 10),
-                    _buildTextField(
-                      controller: _baseLengthController,
-                      label: 'Base Length',
-                      icon: Icons.straighten,
-                    ),
-                    SizedBox(height: 10),
-                    _buildTextField(
-                      controller: _baseWidthController,
-                      label: 'Base Width',
-                      icon: Icons.straighten,
-                    ),
-                    SizedBox(height: 10),
-                    _buildTextField(
-                      controller: _heightController,
-                      label: 'Pyramid Height',
-                      icon: Icons.height,
-                    ),
-                    SizedBox(height: 8),
-                    _buildCalculateButton(
-                      label: 'Calculated',
-                      onPressed: _calculatePyramidVolume,
-                    ),
-                    SizedBox(height: 8),
-                    _buildResultText('Pyramid Volume: $_pyramidVolume'),
-                  ],
-                ),
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDescriptionText(
+                    'สูตรคำนวณปริมาตรของปิระมิด: ปริมาตร = 1/3 × พื้นที่ฐาน × ความสูง\n'
+                    'กรุณากรอกค่าพื้นที่ฐานและความสูงเพื่อคำนวณปริมาตรของปิระมิด',
+                    isDarkMode,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _baseLengthController,
+                    label: 'Base Length',
+                    icon: Icons.straighten,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _baseWidthController,
+                    label: 'Base Width',
+                    icon: Icons.straighten,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _heightController,
+                    label: 'Pyramid Height',
+                    icon: Icons.height,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildCalculateButton(
+                    label: 'Calculate',
+                    onPressed: _calculatePyramidVolume,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(height: 8),
+                  _pyramidVolume != 0.0
+                      ? _buildResultText(
+                          'Pyramid Volume: ${_pyramidVolume.toStringAsFixed(2)}',
+                          isDarkMode,
+                        )
+                      : Container(),
+                ],
               ),
-              SizedBox(height: 20),
-            ],
-          ),
+            ),
+            const SizedBox(height: 20),
+          ],
         ),
       ),
-      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
     );
   }
 
   Widget _buildCard({required Widget child}) {
     return Card(
-      color: _isDarkMode ? Colors.grey[800] : Colors.grey[100],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: child,
-      ),
+      child: Padding(padding: const EdgeInsets.all(16.0), child: child),
     );
   }
 
@@ -178,67 +172,89 @@ class _PyramidVolumeState extends State<Pyramid> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
+    required bool isDarkMode,
   }) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon:
-            Icon(icon, color: _isDarkMode ? Colors.white54 : Colors.grey),
+            Icon(icon, color: isDarkMode ? Colors.white54 : Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide:
-              BorderSide(color: _isDarkMode ? Colors.white54 : Colors.grey),
+              BorderSide(color: isDarkMode ? Colors.white54 : Colors.grey),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide:
-              BorderSide(color: _isDarkMode ? Colors.white : Colors.black),
+              BorderSide(color: isDarkMode ? Colors.white : Colors.black),
         ),
         labelStyle:
-            TextStyle(color: _isDarkMode ? Colors.white70 : Colors.black),
+            TextStyle(color: isDarkMode ? Colors.white70 : Colors.black),
       ),
       keyboardType: TextInputType.number,
-      style: TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+      style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
     );
   }
 
-  Widget _buildCalculateButton(
-      {required String label, required VoidCallback onPressed}) {
+  Widget _buildCalculateButton({
+    required String label,
+    required VoidCallback onPressed,
+    required bool isDarkMode,
+  }) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: _isDarkMode ? Colors.white : Colors.black,
-        foregroundColor: _isDarkMode ? Colors.black : Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        backgroundColor: isDarkMode ? Colors.white : Colors.black,
+        foregroundColor: isDarkMode ? Colors.black : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       ),
       child: Text(
         label,
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }
 
-  Widget _buildResultText(String text) {
+  Widget _buildResultText(String text, bool isDarkMode) {
     return Text(
       text,
       style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
-        color: _isDarkMode ? Colors.white : Colors.black87,
+        color: isDarkMode ? Colors.white : Colors.black87,
       ),
     );
   }
 
-  Widget _buildDescriptionText(String text) {
+  Widget _buildDescriptionText(String text, bool isDarkMode) {
     return Text(
       text,
       style: TextStyle(
         fontSize: 16,
-        color: _isDarkMode ? Colors.white70 : Colors.grey[800],
+        color: isDarkMode ? Colors.white70 : Colors.grey[800],
+      ),
+    );
+  }
+
+  void _showFormulaExplanation() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('คำอธิบายสูตรคำนวณ'),
+        content: const Text(
+          'ปริมาตรของปิระมิดคำนวณโดยใช้สูตร:\n'
+          'ปริมาตร = 1/3 × พื้นที่ฐาน × ความสูง\n'
+          'โดยที่พื้นที่ฐานคำนวณจากความยาว × ความกว้าง',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }

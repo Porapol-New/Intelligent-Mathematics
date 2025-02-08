@@ -1,5 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -65,9 +67,9 @@ class _MymenuState extends State<Mymenu> {
         final routeName = settings.name;
 
         if (routeName == '/Circlearea') {
-          return MaterialPageRoute(builder: (context) => Circlearea());
+          return MaterialPageRoute(builder: (context) => CircleArea());
         } else if (routeName == '/Rectangle') {
-          return MaterialPageRoute(builder: (context) => RectangleCalculator());
+          return MaterialPageRoute(builder: (context) => RectangleArea());
         } else if (routeName == '/CubeVolume') {
           return MaterialPageRoute(builder: (context) => CubeVolume());
         } else if (routeName == '/Triangle') {
@@ -80,10 +82,9 @@ class _MymenuState extends State<Mymenu> {
           return MaterialPageRoute(
               builder: (context) => ParallelogramCalculator());
         } else if (routeName == '/TrapezoidAreaCalculator') {
-          return MaterialPageRoute(
-              builder: (context) => TrapezoidAreaCalculator());
+          return MaterialPageRoute(builder: (context) => TrapezoidArea());
         } else if (routeName == '/Ellipse') {
-          return MaterialPageRoute(builder: (context) => Ellipse());
+          return MaterialPageRoute(builder: (context) => EllipseArea());
         } else if (routeName == '/Pyramid') {
           return MaterialPageRoute(builder: (context) => Pyramid());
         } else if (routeName == '/PyramidSurfaceArea') {
@@ -245,7 +246,7 @@ class MenuCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 25), // Display icon
+            Icon(icon, size: 50), // Display icon
             SizedBox(height: 10),
             Text(
               title,

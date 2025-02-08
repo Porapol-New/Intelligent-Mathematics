@@ -10,27 +10,26 @@ class ConeVolumeApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
         brightness: Brightness.light,
-        scaffoldBackgroundColor: Color(0xFFF8F9FA),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        textTheme: TextTheme(
-          bodyMedium: TextStyle(color: Colors.black87),
-        ),
+        scaffoldBackgroundColor: Colors.white,
+        textTheme:
+            const TextTheme(bodyMedium: TextStyle(color: Colors.black87)),
       ),
       darkTheme: ThemeData(
         primarySwatch: Colors.blueGrey,
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Color(0xFF121212),
-        textTheme: TextTheme(
-          bodyMedium: TextStyle(color: Colors.white70),
-        ),
+        textTheme:
+            const TextTheme(bodyMedium: TextStyle(color: Colors.white70)),
       ),
       themeMode: ThemeMode.system,
-      home: Cone(),
+      home: const Cone(),
     );
   }
 }
 
 class Cone extends StatefulWidget {
+  const Cone();
+
   @override
   _ConeVolumeState createState() => _ConeVolumeState();
 }
@@ -38,39 +37,53 @@ class Cone extends StatefulWidget {
 class _ConeVolumeState extends State<Cone> {
   final TextEditingController _radiusController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
-  double _coneVolume = 0.0;
-  bool _isDarkMode = false;
+  double? _coneVolume;
+  static const double _pi = 3.14159265359;
 
   void _calculateConeVolume() {
-    final radius = double.tryParse(_radiusController.text);
-    final height = double.tryParse(_heightController.text);
-    if (radius != null && height != null) {
-      setState(() {
-        _coneVolume = (1 / 3) * 3.14159265359 * radius * radius * height;
-      });
+    final double? radius = double.tryParse(_radiusController.text);
+    final double? height = double.tryParse(_heightController.text);
+
+    if (radius == null || height == null || radius <= 0 || height <= 0) {
+      _showErrorDialog("กรุณากรอกรัศมีให้ถูกต้อง");
+      return;
     }
+
+    setState(() {
+      _coneVolume = (1 / 3) * _pi * radius * radius * height;
+    });
   }
 
-  void _toggleTheme() {
-    setState(() {
-      _isDarkMode = !_isDarkMode;
-    });
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Input Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showFormulaExplanation() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('คำอธิบายสูตรคำนวณ'),
-        content: Text(
-          'การคำนวณปริมาตรทรงกรวย (Cone Volume) ใช้สูตรดังนี้:\n'
-          'ปริมาตร (V) = (1/3) π r² h\n'
+        title: const Text('คำอธิบายสูตรคำนวณ'),
+        content: const Text(
+          'การคำนวณปริมาตรทรงกรวยใช้สูตรดังนี้:\n'
+          'V = (1/3) × π × r² × h\n'
           'โดยที่ r คือรัศมีของฐาน และ h คือความสูงของทรงกรวย',
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('ปิด'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -79,157 +92,134 @@ class _ConeVolumeState extends State<Cone> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cone Volume Calculator'),
-        backgroundColor: _isDarkMode ? Colors.black : Color(0xFFFAFAFA),
+        title: const Text('Cone Volume Calculator'),
+        backgroundColor: isDarkMode ? Colors.black : Colors.white,
         elevation: 0,
         centerTitle: true,
         titleTextStyle:
-            TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
+            TextStyle(color: isDarkMode ? Colors.white : Colors.black),
         iconTheme:
-            IconThemeData(color: _isDarkMode ? Colors.white : Colors.black),
+            IconThemeData(color: isDarkMode ? Colors.white : Colors.black),
         actions: [
           IconButton(
-            icon: Icon(_isDarkMode
-                ? Icons.wb_sunny_outlined
-                : Icons.nightlight_outlined),
-            onPressed: _toggleTheme,
-            color: _isDarkMode ? Colors.white : Colors.black,
-          ),
-          IconButton(
-            icon: Icon(Icons.info_outline),
-            onPressed: _showFormulaExplanation, // ปุ่มแสดงคำอธิบายสูตร
-            color: _isDarkMode ? Colors.white : Colors.black,
+            icon: const Icon(Icons.info_outline),
+            onPressed: _showFormulaExplanation,
+            color: isDarkMode ? Colors.white : Colors.black,
           ),
         ],
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _buildCard(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildDescriptionText(
-                      'สูตรคำนวณปริมาตรทรงกรวย: ปริมาตร = (1/3) × π × รัศมี² × ความสูง\n'
-                      'กรุณากรอกค่ารัศมีและความสูงเพื่อคำนวณปริมาตร',
-                    ),
-                    SizedBox(height: 10),
-                    _buildTextField(
-                      controller: _radiusController,
-                      label: 'Radius of Cone',
-                      icon: Icons.circle,
-                    ),
-                    SizedBox(height: 10),
-                    _buildTextField(
-                      controller: _heightController,
-                      label: 'Height of Cone',
-                      icon: Icons.height,
-                    ),
-                    SizedBox(height: 8),
-                    _buildCalculateButton(
-                      label: 'Calculated',
-                      onPressed: _calculateConeVolume,
-                    ),
-                    SizedBox(height: 8),
-                    _buildResultText(
-                        'Cone Volume: ${_coneVolume.toStringAsFixed(2)}'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 20),
-            ],
-          ),
-        ),
-      ),
-      backgroundColor: _isDarkMode ? Colors.black : Colors.white,
-    );
-  }
-
-  Widget _buildCard({required Widget child}) {
-    return Card(
-      color: _isDarkMode ? Colors.grey[800] : Colors.grey[100],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 2,
-      child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: child,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDescriptionText(
+                    'สูตรคำนวณปริมาตรทรงกรวย:\n'
+                    'ปริมาตร = (1/3) × π × รัศมี² × ความสูง\n'
+                    'กรุณากรอกค่ารัศมีและความสูงเพื่อคำนวณปริมาตร',
+                    isDarkMode,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _radiusController,
+                    label: 'Radius of Cone',
+                    icon: Icons.circle,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(height: 10),
+                  _buildTextField(
+                    controller: _heightController,
+                    label: 'Height of Cone',
+                    icon: Icons.height,
+                    isDarkMode: isDarkMode,
+                  ),
+                  const SizedBox(height: 8),
+                  _buildCalculateButton(
+                      'Calculate', _calculateConeVolume, isDarkMode),
+                  const SizedBox(height: 8),
+                  _coneVolume != null
+                      ? _buildResultText(
+                          'Cone Volume: ${_coneVolume!.toStringAsFixed(2)}',
+                          isDarkMode)
+                      : Container(),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
     );
   }
+}
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-  }) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon:
-            Icon(icon, color: _isDarkMode ? Colors.white54 : Colors.grey),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide:
-              BorderSide(color: _isDarkMode ? Colors.white54 : Colors.grey),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide:
-              BorderSide(color: _isDarkMode ? Colors.white : Colors.black),
-        ),
-        labelStyle:
-            TextStyle(color: _isDarkMode ? Colors.white70 : Colors.black),
-      ),
-      keyboardType: TextInputType.number,
-      style: TextStyle(color: _isDarkMode ? Colors.white : Colors.black),
-    );
-  }
+Widget _buildCard({required Widget child}) {
+  return Card(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+    elevation: 2,
+    child: Padding(padding: const EdgeInsets.all(16.0), child: child),
+  );
+}
 
-  Widget _buildCalculateButton(
-      {required String label, required VoidCallback onPressed}) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: _isDarkMode ? Colors.white : Colors.black,
-        foregroundColor: _isDarkMode ? Colors.black : Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+Widget _buildTextField({
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  required bool isDarkMode,
+}) {
+  return TextField(
+    controller: controller,
+    decoration: InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon, color: isDarkMode ? Colors.white54 : Colors.grey),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: isDarkMode ? Colors.white : Colors.black),
       ),
-      child: Text(
-        label,
-        style: TextStyle(fontSize: 18),
-      ),
-    );
-  }
+      labelStyle: TextStyle(color: isDarkMode ? Colors.white70 : Colors.black),
+    ),
+    keyboardType: TextInputType.number,
+    style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
+  );
+}
 
-  Widget _buildResultText(String text) {
-    return Text(
-      text,
-      style: TextStyle(
+Widget _buildCalculateButton(
+    String label, VoidCallback onPressed, bool isDarkMode) {
+  return ElevatedButton(
+    onPressed: onPressed,
+    style: ElevatedButton.styleFrom(
+      backgroundColor: isDarkMode ? Colors.white : Colors.black,
+      foregroundColor: isDarkMode ? Colors.black : Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    ),
+    child: Text(label, style: const TextStyle(fontSize: 18)),
+  );
+}
+
+Widget _buildResultText(String text, bool isDarkMode) {
+  return Text(
+    text,
+    style: TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.bold,
-        color: _isDarkMode ? Colors.white : Colors.black87,
-      ),
-    );
-  }
+        color: isDarkMode ? Colors.white : Colors.black87),
+  );
+}
 
-  Widget _buildDescriptionText(String text) {
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 16,
-        color: _isDarkMode ? Colors.white70 : Colors.grey[800],
-      ),
-    );
-  }
+Widget _buildDescriptionText(String text, bool isDarkMode) {
+  return Text(
+    text,
+    style: TextStyle(
+        fontSize: 16, color: isDarkMode ? Colors.white70 : Colors.grey[800]),
+  );
 }
