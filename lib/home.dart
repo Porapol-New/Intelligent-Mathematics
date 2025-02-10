@@ -13,17 +13,6 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<MyHome> {
-  // // ฟังก์ชันสำหรับบันทึกข้อมูลลงไฟล์
-  // Future<void> saveToFile(String data) async {
-  //   final directory = Directory.systemTemp; // ใช้โฟลเดอร์ชั่วคราวสำหรับทดสอบ
-  //   final file = File('${directory.path}/user_data.txt');
-
-  //   // เขียนข้อมูลลงไฟล์
-  //   await file.writeAsString(data, mode: FileMode.append);
-  //   debugPrint('Data saved: $data');
-  //   debugPrint('File location: ${file.path}');
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Container(

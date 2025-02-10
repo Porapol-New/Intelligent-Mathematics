@@ -5,20 +5,20 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_loginsystems_1/Cone%20Volume.dart';
-import 'package:flutter_loginsystems_1/Cube%20Volume.dart';
-import 'package:flutter_loginsystems_1/Ellipse.dart';
-import 'package:flutter_loginsystems_1/Parallelogram.dart';
-import 'package:flutter_loginsystems_1/Percentage.dart';
-import 'package:flutter_loginsystems_1/Pyramid%20Surface%20Area.dart';
-import 'package:flutter_loginsystems_1/Pyramid%20Volume.dart';
-import 'package:flutter_loginsystems_1/Sphere%20Volume.dart';
-import 'package:flutter_loginsystems_1/Trapezoid.dart';
-import 'package:flutter_loginsystems_1/Triangle.dart';
+import 'package:flutter_loginsystems_1/cone_volume.dart';
+import 'package:flutter_loginsystems_1/cube_volume.dart';
+import 'package:flutter_loginsystems_1/ellipse.dart';
+import 'package:flutter_loginsystems_1/parallelogram.dart';
+import 'package:flutter_loginsystems_1/percentage.dart';
+import 'package:flutter_loginsystems_1/pyramid_surface_area.dart';
+import 'package:flutter_loginsystems_1/pyramid_volume.dart';
+import 'package:flutter_loginsystems_1/sphere_volume.dart';
+import 'package:flutter_loginsystems_1/trapezoid.dart';
+import 'package:flutter_loginsystems_1/triangle.dart';
 import 'package:flutter_loginsystems_1/userinfo.dart';
 // import 'Cubes.dart';
-import 'Rectangle.dart';
-import 'Circle.dart';
+import 'rectangle.dart';
+import 'circle.dart';
 
 void main() async {
   // เริ่มต้นการใช้งาน Firebase ก่อนที่แอปจะเริ่มทำงาน
@@ -218,6 +218,87 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// class MenuCard extends StatelessWidget {
+//   final String title;
+//   final String iconName;
+//   final String routeName;
+
+//   const MenuCard({
+//     required this.title,
+//     required this.iconName,
+//     required this.routeName,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     IconData icon = _getIconFromName(iconName); // รับไอคอนจากชื่อที่กำหนด
+
+//     return GestureDetector(
+//       onTap: () {
+//         Navigator.pushNamed(
+//             context, routeName); // นำทางไปยังเส้นทางที่กำหนดเมื่อคลิก
+//       },
+//       child: Card(
+//         shape: RoundedRectangleBorder(
+//           borderRadius:
+//               BorderRadius.circular(20), // การตั้งค่ามุมของการ์ดให้กลม
+//         ),
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Icon(icon, size: 50), // Display icon
+//             SizedBox(height: 10),
+//             Text(
+//               title,
+//               style: TextStyle(
+//                 fontSize: 12, // Adjust font size if needed
+//               ),
+//             ), // Display menu name
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   // ฟังก์ชันเพื่อจับคู่ชื่อไอคอนกับไอคอนที่แท้จริง
+//   IconData _getIconFromName(String iconName) {
+//     Map<String, IconData> iconMap = {
+//       'Circle': Icons.circle_outlined,
+//       'Rectangle': Icons.rectangle_outlined,
+//       'CubeVolume': Icons.square,
+//       'Triangle': Icons.change_history_sharp,
+//       'SphereVolume': Icons.circle_rounded,
+//       'ConeVolume': Icons.category_rounded,
+//       'Parallelogram': Icons.crop_square,
+//       'Trapezoid': Icons.widgets_rounded,
+//       'Ellipse': Icons.egg,
+//       'PyramidVolume': Icons.change_history_sharp,
+//       'PyramidSurfaceArea': Icons.widgets_outlined,
+//       'Percentage': Icons.percent_outlined,
+//     };
+
+//     return iconMap[iconName] ??
+//         Icons.help_outline; // ถ้าไม่พบไอคอนให้ใช้ไอคอนช่วยเหลือ
+//   }
+// }
+
+class NotFoundScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Not Found'),
+      ),
+      body: Center(
+        child: Text(
+          'Page not found', // แสดงข้อความเมื่อไม่พบเส้นทาง
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+    );
+  }
+}
+
 class MenuCard extends StatelessWidget {
   final String title;
   final String iconName;
@@ -231,68 +312,31 @@ class MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    IconData icon = _getIconFromName(iconName); // รับไอคอนจากชื่อที่กำหนด
-
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(
-            context, routeName); // นำทางไปยังเส้นทางที่กำหนดเมื่อคลิก
+        Navigator.pushNamed(context, routeName);
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(20), // การตั้งค่ามุมของการ์ดให้กลม
+          borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 50), // Display icon
+            Image.asset(
+              'assets/icons/$iconName.webp', // โหลดภาพจาก assets/icons/
+              width: 50,
+              height: 50,
+              errorBuilder: (context, error, stackTrace) {
+                return Icon(Icons.error, color: Colors.red, size: 50);
+              },
+            ),
             SizedBox(height: 10),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 12, // Adjust font size if needed
-              ),
-            ), // Display menu name
+              style: TextStyle(fontSize: 12),
+            ),
           ],
-        ),
-      ),
-    );
-  }
-
-  // ฟังก์ชันเพื่อจับคู่ชื่อไอคอนกับไอคอนที่แท้จริง
-  IconData _getIconFromName(String iconName) {
-    Map<String, IconData> iconMap = {
-      'Circle': Icons.circle_outlined,
-      'Rectangle': Icons.rectangle_outlined,
-      'CubeVolume': Icons.square,
-      'Triangle': Icons.change_history_sharp,
-      'SphereVolume': Icons.circle_rounded,
-      'ConeVolume': Icons.category_rounded,
-      'Parallelogram': Icons.crop_square,
-      'Trapezoid': Icons.widgets_rounded,
-      'Ellipse': Icons.egg,
-      'PyramidVolume': Icons.change_history_sharp,
-      'PyramidSurfaceArea': Icons.widgets_outlined,
-      'Percentage': Icons.percent_outlined,
-    };
-
-    return iconMap[iconName] ??
-        Icons.help_outline; // ถ้าไม่พบไอคอนให้ใช้ไอคอนช่วยเหลือ
-  }
-}
-
-class NotFoundScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Not Found'),
-      ),
-      body: Center(
-        child: Text(
-          'Page not found', // แสดงข้อความเมื่อไม่พบเส้นทาง
-          style: TextStyle(fontSize: 24),
         ),
       ),
     );
