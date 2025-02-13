@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:math'; // Importing math package for Pi
+import 'dart:math';
+
+import 'package:flutter_loginsystems_1/comment_section.dart'; // Importing math package for Pi
 
 class EllipseAreaApp extends StatelessWidget {
   @override
@@ -165,6 +167,7 @@ class _EllipseAreaState extends State<EllipseArea> {
               ),
             ),
             const SizedBox(height: 20),
+            CommentSection(pageId: "ellipse"),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/comment_section.dart';
 
 class PyramidSurfaceAreaApp extends StatelessWidget {
   @override
@@ -175,6 +176,7 @@ class _PyramidSurfaceAreaState extends State<PyramidSurfaceArea> {
               ),
             ),
             const SizedBox(height: 20),
+            CommentSection(pageId: "pyramid_surface")
           ],
         ),
       ),

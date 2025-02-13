@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_loginsystems_1/Menu.dart';
+import 'package:flutter_loginsystems_1/comment_section.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -186,6 +187,7 @@ class _TriangleAreaState extends State<Triangle> {
                 ),
               ),
               const SizedBox(height: 20),
+              CommentSection(pageId: "triangle")
             ],
           ),
         ),

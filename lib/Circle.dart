@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/comment_section.dart';
 
 class CircleAreaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Minimalist Circle Area Calculator',
+      title: 'Circle Area Calculator',
       theme: ThemeData(
         primarySwatch: Colors.blueGrey,
         brightness: Brightness.light,
@@ -153,6 +154,7 @@ class _CircleAreaState extends State<CircleArea> {
               ),
             ),
             const SizedBox(height: 20),
+            CommentSection(pageId: "circle"),
           ],
         ),
       ),

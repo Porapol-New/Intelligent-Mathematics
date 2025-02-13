@@ -24,7 +24,7 @@ class _UserProfileState extends State<UserProfile> {
             : Colors.white, // เปลี่ยนสีพื้นหลัง AppBar ตามธีม
         elevation: 0, // ลบเงาเพื่อให้ดูสะอาดตา
         title: Text(
-          'User Profile',
+          'Account',
           style: TextStyle(
               color: isDarkMode
                   ? Colors.white
@@ -41,41 +41,54 @@ class _UserProfileState extends State<UserProfile> {
             : Column(
                 mainAxisSize: MainAxisSize.min, // จัดให้อยู่ตรงกลางแนวตั้ง
                 children: [
-                  if (user != null &&
-                      user.email !=
-                          null) // ตรวจสอบว่า user และ email ไม่ใช่ null
+                  if (user != null && user.email != null)
                     Column(
                       children: [
+                        // ใช้ Icon แทน CircleAvatar
+                        Icon(
+                          Icons.account_circle,
+                          size: 100, // ปรับขนาดของ Icon
+                          color: isDarkMode
+                              ? Colors.white
+                              : Colors.black, // ปรับสีของ Icon
+                        ),
+                        const SizedBox(height: 5),
+                        // ชื่อผู้ใช้
+                        Text(
+                          '${user.displayName ?? "No name"}',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: isDarkMode ? Colors.white : Colors.black,
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        // อีเมลของผู้ใช้
                         Text(
                           '${user.email}',
                           style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: isDarkMode
-                                ? Colors.white
-                                : Colors.black, // ปรับสีข้อความตามธีม
+                            fontSize: 18,
+                            color: isDarkMode ? Colors.white70 : Colors.black54,
                           ),
                         ),
-                        const SizedBox(height: 20), // เพิ่มระยะห่าง
+                        const SizedBox(height: 10),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: isDarkMode
-                                ? Colors.white
-                                : Colors.black, // ปรับสีพื้นหลังปุ่มตามธีม
+                            backgroundColor:
+                                isDarkMode ? Colors.white : Colors.black,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 10),
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                  20), // ปรับปุ่มให้มีมุมโค้ง
+                              borderRadius: BorderRadius.circular(20),
                             ),
                           ),
                           onPressed: () async {
                             setState(() {
-                              isLoading = true; // เริ่มโหลด
+                              isLoading = true;
                             });
                             await auth.signOut().then((value) {
                               setState(() {
-                                isLoading = false; // หยุดโหลด
+                                isLoading = false;
                               });
                               Navigator.pushReplacement(
                                 context,
@@ -88,9 +101,7 @@ class _UserProfileState extends State<UserProfile> {
                           child: Text(
                             'Logout',
                             style: TextStyle(
-                              color: isDarkMode
-                                  ? Colors.black
-                                  : Colors.white, // ปรับสีตัวอักษรในปุ่มตามธีม
+                              color: isDarkMode ? Colors.black : Colors.white,
                               fontSize: 16,
                             ),
                           ),

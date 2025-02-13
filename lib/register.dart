@@ -5,6 +5,7 @@ import 'home.dart';
 import 'profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:form_field_validator/form_field_validator.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // นำเข้า Firestore
 
 class MyRegister extends StatefulWidget {
   const MyRegister({Key? key}) : super(key: key);
@@ -15,9 +16,9 @@ class MyRegister extends StatefulWidget {
 
 class _MyRegisterState extends State<MyRegister> {
   final formKey = GlobalKey<FormState>();
-  Profile profile = Profile(email: '', password: '');
+  Profile profile = Profile(email: '', password: '', username: '');
   final Future<FirebaseApp> firebase = Firebase.initializeApp();
-  bool isLoading = false; // เพิ่มตัวแปร isLoading
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -86,9 +87,15 @@ class _MyRegisterState extends State<MyRegister> {
                               key: formKey,
                               child: Column(
                                 children: [
+                                  // ฟิลด์สำหรับ Username
                                   TextFormField(
                                     validator: RequiredValidator(
-                                        errorText: "กรุณากรอกข้อมูลให้ถูกต้อง"),
+                                        errorText: "กรุณากรอก Username"),
+                                    onSaved: (String? username) {
+                                      if (username != null) {
+                                        profile.username = username;
+                                      }
+                                    },
                                     style: TextStyle(color: Colors.white),
                                     decoration: InputDecoration(
                                       enabledBorder: OutlineInputBorder(
@@ -111,6 +118,7 @@ class _MyRegisterState extends State<MyRegister> {
                                     ),
                                   ),
                                   SizedBox(height: 30),
+                                  // ฟิลด์สำหรับ Email
                                   TextFormField(
                                     validator: MultiValidator([
                                       RequiredValidator(
@@ -145,6 +153,7 @@ class _MyRegisterState extends State<MyRegister> {
                                     ),
                                   ),
                                   SizedBox(height: 30),
+                                  // ฟิลด์สำหรับ Password
                                   TextFormField(
                                     validator: RequiredValidator(
                                         errorText: "กรุณากรอกรหัสผ่าน"),
@@ -176,6 +185,7 @@ class _MyRegisterState extends State<MyRegister> {
                                     ),
                                   ),
                                   SizedBox(height: 40),
+                                  // ปุ่มสมัครสมาชิก
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -199,16 +209,36 @@ class _MyRegisterState extends State<MyRegister> {
                                               formKey.currentState!.save();
 
                                               setState(() {
-                                                isLoading =
-                                                    true; // แสดง loading
+                                                isLoading = true;
                                               });
 
                                               try {
-                                                await FirebaseAuth.instance
-                                                    .createUserWithEmailAndPassword(
+                                                // สร้างบัญชีผู้ใช้ด้วย Firebase Authentication
+                                                UserCredential userCredential =
+                                                    await FirebaseAuth.instance
+                                                        .createUserWithEmailAndPassword(
                                                   email: profile.email,
                                                   password: profile.password,
                                                 );
+
+                                                // รับผู้ใช้ที่สร้างขึ้น
+                                                User? user =
+                                                    userCredential.user;
+
+                                                // อัปเดตชื่อผู้ใช้ใน Firebase Authentication
+                                                await user?.updateDisplayName(
+                                                    profile.username);
+
+                                                // เก็บข้อมูลผู้ใช้ลง Firestore
+                                                await FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(user?.uid)
+                                                    .set({
+                                                  'username': profile.username,
+                                                  'email': profile.email,
+                                                  'uid': user?.uid,
+                                                });
+
                                                 formKey.currentState!.reset();
                                                 Navigator.pushReplacement(
                                                     context, MaterialPageRoute(
@@ -239,8 +269,7 @@ class _MyRegisterState extends State<MyRegister> {
                                                 );
                                               } finally {
                                                 setState(() {
-                                                  isLoading =
-                                                      false; // ซ่อน loading
+                                                  isLoading = false;
                                                 });
                                               }
                                             } else {
@@ -285,10 +314,8 @@ class _MyRegisterState extends State<MyRegister> {
                                       ),
                                     ],
                                   ),
-                                  if (isLoading) // แสดง CircularProgressIndicator เมื่อกำลังโหลด
-                                    Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
+                                  if (isLoading)
+                                    Center(child: CircularProgressIndicator()),
                                 ],
                               ),
                             ),

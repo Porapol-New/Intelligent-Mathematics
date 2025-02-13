@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/comment_section.dart';
 
 class ParallelogramCalculator extends StatefulWidget {
   const ParallelogramCalculator({Key? key}) : super(key: key); // Added const
@@ -138,6 +139,7 @@ class _ParallelogramCalculatorState extends State<ParallelogramCalculator> {
               ),
             ),
             const SizedBox(height: 20), // Added const
+            CommentSection(pageId: "parallelogram"),
           ],
         ),
       ),

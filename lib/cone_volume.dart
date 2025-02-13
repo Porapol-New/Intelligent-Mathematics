@@ -1,6 +1,7 @@
 // ignore_for_file: use_key_in_widget_constructors, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/comment_section.dart';
 
 class ConeVolumeApp extends StatelessWidget {
   @override
@@ -153,6 +154,8 @@ class _ConeVolumeState extends State<Cone> {
                 ],
               ),
             ),
+            const SizedBox(height: 20),
+            CommentSection(pageId: "cone_volume"),
           ],
         ),
       ),

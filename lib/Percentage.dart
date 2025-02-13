@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/comment_section.dart';
 import 'package:intl/intl.dart';
 
 class PercentageCalculator extends StatefulWidget {
@@ -146,6 +147,7 @@ class _PercentageCalculatorState extends State<PercentageCalculator> {
               ),
             ),
             const SizedBox(height: 20),
+            CommentSection(pageId: "percentage"),
           ],
         ),
       ),

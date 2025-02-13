@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:flutter_loginsystems_1/comment_section.dart';
+
 class SphereVolumeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -153,6 +155,7 @@ class _SphereVolumeCalculatorState extends State<Sphere> {
               ),
             ),
             const SizedBox(height: 20),
+            CommentSection(pageId: "sphere_volume")
           ],
         ),
       ),

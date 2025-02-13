@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_loginsystems_1/comment_section.dart';
 
 void main() {
   runApp(const CubeVolumeApp());
@@ -147,10 +148,12 @@ class _CubeVolumeState extends State<CubeVolume> {
                       'Cube Volume: ${_cubeVolume.toStringAsFixed(2)}',
                       isDarkMode,
                     ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
             const SizedBox(height: 20),
+            CommentSection(pageId: "cube_volume"),
           ],
         ),
       ),
