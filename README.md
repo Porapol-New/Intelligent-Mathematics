@@ -1,4 +1,4 @@
-# intelligentmathematics
+# IntelligentMathematics
 
 A new Flutter project.
 
