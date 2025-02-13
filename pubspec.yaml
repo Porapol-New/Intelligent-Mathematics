@@ -73,18 +73,18 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/
-    - assets/assets/icons/cone_volume.webp
-    - assets/assets/icons/cube_volume.webp
-    - assets/assets/icons/ellipse.webp
-    - assets/assets/icons/parallelogram.webp
-    - assets/assets/icons/percentage.webp
-    - assets/assets/icons/pyramid_surface.webp
-    - assets/assets/icons/pyramid_volume.webp
-    - assets/assets/icons/rectangle.webp
-    - assets/assets/icons/sphere_volume.webp
-    - assets/assets/icons/trapezoid.webp
-    - assets/assets/icons/triangle.webp
-    - assets/assets/icons/circle.webp
+    - assets/icons/cone_volume.webp
+    - assets/icons/cube_volume.webp
+    - assets/icons/ellipse.webp
+    - assets/icons/parallelogram.webp
+    - assets/icons/percentage.webp
+    - assets/icons/pyramid_surface.webp
+    - assets/icons/pyramid_volume.webp
+    - assets/icons/rectangle.webp
+    - assets/icons/sphere_volume.webp
+    - assets/icons/trapezoid.webp
+    - assets/icons/triangle.webp
+    - assets/icons/circle.webp
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
